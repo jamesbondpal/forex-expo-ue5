@@ -11,4 +11,5 @@ Build/
 .DS_Store
 MCPPython/.venv/
 MCPPython/__pycache__/
+MCPPython/*.egg-info/
 *.pyc
