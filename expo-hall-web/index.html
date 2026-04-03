@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ExpoVR — mybestbrokers.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=DM+Mono:wght@400&family=DM+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="c"></canvas>
+      <div id="hud">
+        <div id="brand">
+          <span class="title">ExpoVR</span>
+          <span class="sub">Powered by <a href="https://mybestbrokers.com" target="_blank" rel="noopener">mybestbrokers.com</a></span>
+        </div>
+        <div id="hint">Click canvas · WASD move · Mouse look · Esc unlock</div>
+      </div>
+      <div id="panel" class="hidden">
+        <button type="button" id="panel-close" aria-label="Close">×</button>
+        <h2 id="panel-name"></h2>
+        <p id="panel-tag"></p>
+        <ul id="panel-features"></ul>
+        <p class="contact">info@mybestbrokers.com</p>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
