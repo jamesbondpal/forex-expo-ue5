@@ -2,25 +2,33 @@ import * as THREE from "three";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
-/** Poly Haven CC0 — interior HDRI + tileable PBR maps (browser-friendly CDN). */
-const HDR_URL =
-  "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/brown_photostudio_06_2k.hdr";
+/**
+ * Same-origin assets under /public/polyhaven (no CORS).
+ * Poly Haven CC0 — see https://polyhaven.com
+ */
+function assetUrl(path: string): string {
+  const base = import.meta.env.BASE_URL;
+  const normalized = base.endsWith("/") ? base : `${base}/`;
+  return `${normalized}polyhaven/${path}`;
+}
+
+const HDR_PATH = "hdr/brown_photostudio_06_1k.hdr";
 
 const MARBLE = {
-  diff: "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/marble_01/marble_01_diff_1k.jpg",
-  nor: "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/marble_01/marble_01_nor_gl_1k.jpg",
-  rough: "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/marble_01/marble_01_rough_1k.jpg",
+  diff: "textures/marble_01/marble_01_diff_1k.jpg",
+  nor: "textures/marble_01/marble_01_nor_gl_1k.jpg",
+  rough: "textures/marble_01/marble_01_rough_1k.jpg",
 };
 
 const CONCRETE = {
-  diff: "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/concrete_wall_001/concrete_wall_001_diff_1k.jpg",
-  nor: "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/concrete_wall_001/concrete_wall_001_nor_gl_1k.jpg",
-  rough: "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/concrete_wall_001/concrete_wall_001_rough_1k.jpg",
+  diff: "textures/concrete_wall_001/concrete_wall_001_diff_1k.jpg",
+  nor: "textures/concrete_wall_001/concrete_wall_001_nor_gl_1k.jpg",
+  rough: "textures/concrete_wall_001/concrete_wall_001_rough_1k.jpg",
 };
 
 const CARPET = {
-  diff: "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/carpet_01/carpet_01_diff_1k.jpg",
-  rough: "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/carpet_01/carpet_01_rough_1k.jpg",
+  diff: "textures/dirty_carpet/dirty_carpet_diff_1k.jpg",
+  rough: "textures/dirty_carpet/dirty_carpet_rough_1k.jpg",
 };
 
 function configureRepeat(tex: THREE.Texture, rx: number, ry: number) {
@@ -56,11 +64,10 @@ export async function loadAssets(
   pmrem.compileEquirectangularShader();
 
   const loader = new THREE.TextureLoader();
-  loader.crossOrigin = "anonymous";
 
-  const loadTex = (url: string) =>
+  const loadTex = (relativePath: string) =>
     new Promise<THREE.Texture>((resolve, reject) => {
-      loader.load(url, resolve, undefined, reject);
+      loader.load(assetUrl(relativePath), resolve, undefined, reject);
     });
 
   let envMap: THREE.Texture;
@@ -69,8 +76,7 @@ export async function loadAssets(
   onProgress("Loading HDRI environment…");
   try {
     const rgbe = new RGBELoader();
-    rgbe.crossOrigin = "anonymous";
-    const hdr = await rgbe.loadAsync(HDR_URL);
+    const hdr = await rgbe.loadAsync(assetUrl(HDR_PATH));
     hdr.mapping = THREE.EquirectangularReflectionMapping;
     const rt = pmrem.fromEquirectangular(hdr);
     envMap = rt.texture;
@@ -79,8 +85,9 @@ export async function loadAssets(
       envMap.dispose();
       rt.dispose();
     };
-  } catch {
-    onProgress("HDRI failed — using procedural studio fallback.");
+  } catch (e) {
+    console.warn("HDRI load failed, using RoomEnvironment:", e);
+    onProgress("HDRI missing — using procedural studio fallback.");
     const envScene = new RoomEnvironment();
     const rt = pmrem.fromScene(envScene, 0.045);
     envMap = rt.texture;

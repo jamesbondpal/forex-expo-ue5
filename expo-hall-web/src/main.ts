@@ -102,7 +102,7 @@ async function bootstrap() {
     booths = buildHall(scene, BROKERS, assets);
   } catch (e) {
     console.error(e);
-    loadingText.textContent = "Failed to load assets. Check network / CORS.";
+    loadingText.textContent = "Failed to load assets. Run npm run build from expo-hall-web and ensure public/polyhaven exists.";
     throw e;
   } finally {
     loadingEl.classList.add("hidden");
