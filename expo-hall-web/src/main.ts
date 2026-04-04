@@ -17,6 +17,13 @@ import { buildHall, HALL, COL } from "./scene";
 import { addCrowd, animateCrowd } from "./crowd";
 import { representativePortraitUrl } from "./logoLoader";
 import { resolveBoothCollisions } from "./collision";
+import {
+  applyHdrSkybox,
+  clearHdrSkybox,
+  loadGltfProps,
+  DEFAULT_GLTF_PROPS,
+  tryAddVideoBackdrop,
+} from "./ueStyleVisuals";
 
 function setupPanel(): {
   show: (b: Broker) => void;
@@ -114,6 +121,7 @@ composer.addPass(outputPass);
 let booths: THREE.Group[] = [];
 let crowdWalkers: THREE.Group[] = [];
 let disposeAssets: (() => void) | null = null;
+let disposeVideoBackdrop: (() => void) | null = null;
 
 async function bootstrap() {
   try {
@@ -123,6 +131,11 @@ async function bootstrap() {
     scene.environment = assets.envMap;
     disposeAssets = assets.disposeEnv;
 
+    if (assets.backgroundEquirect) {
+      applyHdrSkybox(scene, assets.backgroundEquirect, { intensity: 0.78, blurriness: 0.12 });
+      scene.fog = new THREE.FogExp2(COL.fog, 0.003);
+    }
+
     const rect = new THREE.RectAreaLight(0xfff2dd, 12, HALL.w * 0.82, 4);
     rect.position.set(0, HALL.ceiling - 0.6, 0);
     rect.rotation.x = -Math.PI / 2;
@@ -131,6 +144,14 @@ async function bootstrap() {
     booths = await buildHall(scene, BROKERS, assets, (msg) => {
       loadingText.textContent = msg;
     });
+
+    await loadGltfProps(scene, assets.envMap, DEFAULT_GLTF_PROPS, (msg) => {
+      loadingText.textContent = msg;
+    });
+
+    const vd = await tryAddVideoBackdrop(scene, HALL);
+    if (vd) disposeVideoBackdrop = vd.dispose;
+
     crowdWalkers = addCrowd(scene, 42);
   } catch (e) {
     console.error(e);
@@ -252,6 +273,10 @@ bootstrap()
   });
 
 window.addEventListener("beforeunload", () => {
+  clearHdrSkybox(scene);
+  scene.background = new THREE.Color(COL.fog);
+  disposeVideoBackdrop?.();
+  disposeVideoBackdrop = null;
   disposeAssets?.();
   composer.dispose();
   renderer.dispose();

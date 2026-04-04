@@ -49,6 +49,8 @@ function configureNonColor(tex: THREE.Texture, rx: number, ry: number) {
 
 export interface LoadedAssets {
   envMap: THREE.Texture;
+  /** Same HDRI as equirect — use for `scene.background` (UE-style sky) while `envMap` stays the convolved PMREM. */
+  backgroundEquirect: THREE.Texture | null;
   disposeEnv: () => void;
   floorMat: THREE.MeshPhysicalMaterial;
   carpetMat: THREE.MeshPhysicalMaterial;
@@ -71,6 +73,7 @@ export async function loadAssets(
     });
 
   let envMap: THREE.Texture;
+  let backgroundEquirect: THREE.Texture | null = null;
   let disposeEnv: () => void = () => {};
 
   onProgress("Loading HDRI environment…");
@@ -78,12 +81,13 @@ export async function loadAssets(
     const rgbe = new RGBELoader();
     const hdr = await rgbe.loadAsync(assetUrl(HDR_PATH));
     hdr.mapping = THREE.EquirectangularReflectionMapping;
+    backgroundEquirect = hdr;
     const rt = pmrem.fromEquirectangular(hdr);
     envMap = rt.texture;
-    hdr.dispose();
     disposeEnv = () => {
       envMap.dispose();
       rt.dispose();
+      hdr.dispose();
     };
   } catch (e) {
     console.warn("HDRI load failed, using RoomEnvironment:", e);
@@ -91,6 +95,7 @@ export async function loadAssets(
     const envScene = new RoomEnvironment();
     const rt = pmrem.fromScene(envScene, 0.045);
     envMap = rt.texture;
+    backgroundEquirect = null;
     disposeEnv = () => {
       envMap.dispose();
       rt.dispose();
@@ -170,6 +175,7 @@ export async function loadAssets(
 
   return {
     envMap,
+    backgroundEquirect,
     disposeEnv,
     floorMat,
     carpetMat,
