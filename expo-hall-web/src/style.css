@@ -82,6 +82,7 @@ body {
   left: 0;
   right: 0;
   top: 0;
+  bottom: 0;
   padding: 1rem 1.25rem;
   display: flex;
   justify-content: space-between;
@@ -122,6 +123,22 @@ body {
   max-width: 14rem;
   text-align: right;
   line-height: 1.35;
+}
+
+#hud .prospectus {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1rem;
+  font-size: 0.72rem;
+  color: #c9a84c;
+  opacity: 0.85;
+  pointer-events: auto;
+  text-decoration: none;
+}
+
+#hud .prospectus:hover {
+  text-decoration: underline;
+  color: #e8d5a0;
 }
 
 #panel {

@@ -8,12 +8,15 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 import { SMAAPass } from "three/addons/postprocessing/SMAAPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { FilmPass } from "three/addons/postprocessing/FilmPass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+import { VignetteShader } from "three/addons/shaders/VignetteShader.js";
 import { BROKERS } from "./brokers";
 import type { Broker } from "./brokers";
 import { loadAssets } from "./assets";
 import { buildHall, HALL, COL } from "./scene";
 import { addCrowd, animateCrowd } from "./crowd";
 import { representativePortraitUrl } from "./logoLoader";
+import { resolveBoothCollisions } from "./collision";
 
 function setupPanel(): {
   show: (b: Broker) => void;
@@ -78,29 +81,33 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.18;
+renderer.toneMappingExposure = 1.05;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 RectAreaLightUniformsLib.init();
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(COL.fog);
-scene.fog = new THREE.FogExp2(COL.fog, 0.007);
+scene.fog = new THREE.FogExp2(COL.fog, 0.004);
 
-const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.08, 450);
-camera.position.set(0, 1.65, 34);
+const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.08, 520);
+camera.position.set(0, 1.65, 44);
 
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.42, 0.55, 0.9);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 0.48, 0.88);
 const SMAAFactory = SMAAPass as unknown as new (w: number, h: number) => InstanceType<typeof SMAAPass>;
 const smaaPass = new SMAAFactory(window.innerWidth, window.innerHeight);
-const filmPass = new FilmPass(0.06, false);
+const filmPass = new FilmPass(0.032, false);
+const vignettePass = new ShaderPass(VignetteShader);
+vignettePass.uniforms.offset.value = 0.92;
+vignettePass.uniforms.darkness.value = 1.18;
 const outputPass = new OutputPass();
 
 composer.addPass(renderPass);
 composer.addPass(bloomPass);
 composer.addPass(filmPass);
+composer.addPass(vignettePass);
 composer.addPass(smaaPass);
 composer.addPass(outputPass);
 
@@ -171,7 +178,8 @@ window.addEventListener("keyup", (e) => {
 
 const clock = new THREE.Clock();
 const moveVec = new THREE.Vector3();
-const speed = 14;
+const speed = 12;
+const PLAYER_RADIUS = 0.48;
 
 function onResize() {
   const w = window.innerWidth;
@@ -201,8 +209,12 @@ function animate() {
   }
 
   const p = camera.position;
-  p.x = THREE.MathUtils.clamp(p.x, -HALL.w / 2 + 2, HALL.w / 2 - 2);
-  p.z = THREE.MathUtils.clamp(p.z, -HALL.d / 2 + 3, HALL.d / 2 - 2);
+  p.x = THREE.MathUtils.clamp(p.x, -HALL.w / 2 + 2.5, HALL.w / 2 - 2.5);
+  p.z = THREE.MathUtils.clamp(p.z, -HALL.d / 2 + 3.5, HALL.d / 2 - 2.5);
+
+  resolveBoothCollisions(p, booths, PLAYER_RADIUS);
+  p.x = THREE.MathUtils.clamp(p.x, -HALL.w / 2 + 2.5, HALL.w / 2 - 2.5);
+  p.z = THREE.MathUtils.clamp(p.z, -HALL.d / 2 + 3.5, HALL.d / 2 - 2.5);
 
   animateCrowd(crowdWalkers, dt, HALL);
 

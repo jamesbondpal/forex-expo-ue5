@@ -1,11 +1,13 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import type { Broker, Representative } from "./brokers";
+import type { Broker } from "./brokers";
 import type { LoadedAssets } from "./assets";
 import { fetchFaviconImage, loadPortraitTexture, makeBrandedBackWallTexture } from "./logoLoader";
+import { makeProspectusEntranceTexture, PROSPECTUS } from "./prospectusTheme";
 
-export const HALL = { w: 120, d: 80, ceiling: 12 };
-export const COL = { hall: 0x030507, surface: 0x080c14, fog: 0x04060a };
+/** Wider hall + taller ceiling for trade-show scale; aisles enforced in `distributeWithAisles`. */
+export const HALL = { w: 132, d: 90, ceiling: 14 };
+export const COL = { hall: PROSPECTUS.hallNavy, surface: 0x0c121f, fog: PROSPECTUS.fog };
 
 function hexColor(hex: string): THREE.Color {
   return new THREE.Color(hex);
@@ -41,53 +43,35 @@ export function makeLabelTexture(
   return tex;
 }
 
-function addStaffFigure(
-  parent: THREE.Group,
-  broker: Broker,
-  _rep: Representative,
-  portraitMap: THREE.Texture,
-  xOff: number,
-  _width: number,
-  depth: number,
-  _height: number
-) {
+/** Suit body + large photoreal portrait plane (faces the aisle / visitor). */
+function addStaffFigure(parent: THREE.Group, broker: Broker, portraitMap: THREE.Texture, xOff: number, depth: number) {
   const g = new THREE.Group();
-  const r = 0.17;
-  const len = 0.68;
+  const r = 0.14;
+  const torsoLen = 0.74;
   const suit = new THREE.MeshPhysicalMaterial({
     color: broker.secondary,
-    metalness: 0.38,
-    roughness: 0.52,
-    envMapIntensity: 0.55,
+    metalness: 0.22,
+    roughness: 0.58,
+    envMapIntensity: 0.5,
   });
-  const body = new THREE.Mesh(new THREE.CapsuleGeometry(r, len, 6, 12), suit);
-  const yBot = 0.08 + r + len / 2;
+  const body = new THREE.Mesh(new THREE.CapsuleGeometry(r, torsoLen, 8, 16), suit);
+  const yBot = 0.08 + r + torsoLen / 2;
   body.position.y = yBot;
   body.castShadow = true;
 
-  const skin = new THREE.MeshPhysicalMaterial({
-    color: 0xf0d0c0,
-    roughness: 0.62,
-    metalness: 0,
-    envMapIntensity: 0.35,
-  });
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.12, 14, 14), skin);
-  head.position.y = yBot + len / 2 + r + 0.12;
-  head.castShadow = true;
-
   const face = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.24, 0.24),
+    new THREE.PlaneGeometry(0.5, 0.66),
     new THREE.MeshPhysicalMaterial({
       map: portraitMap,
       metalness: 0,
-      roughness: 0.45,
-      transparent: true,
+      roughness: 0.32,
+      envMapIntensity: 0.22,
     })
   );
-  face.position.set(0, head.position.y, 0.14);
+  face.position.set(0, yBot + torsoLen / 2 + r + 0.02, r * 1.15);
 
-  g.add(body, head, face);
-  g.position.set(xOff, 0, -depth * 0.22);
+  g.add(body, face);
+  g.position.set(xOff, 0, -depth * 0.2);
   parent.add(g);
 }
 
@@ -226,11 +210,12 @@ function buildBoothMeshes(
   g.add(screen);
 
   const sx = width * 0.22;
-  addStaffFigure(g, broker, broker.representatives[0], portraitTex[0]!, -sx, width, depth, height);
-  addStaffFigure(g, broker, broker.representatives[1], portraitTex[1]!, sx, width, depth, height);
+  addStaffFigure(g, broker, portraitTex[0]!, -sx, depth);
+  addStaffFigure(g, broker, portraitTex[1]!, sx, depth);
 
   g.userData.broker = broker as unknown as Record<string, unknown>;
   g.userData.isBooth = true;
+  g.userData.collider = { halfW: width * 0.5, halfD: depth * 0.5 };
   return g;
 }
 
@@ -254,9 +239,10 @@ async function createBoothAsync(
   return buildBoothMeshes(broker, x, z, width, depth, height, backWallTex, [p0, p1]);
 }
 
-export function distributeCenters(count: number, unit: number): number[] {
+/** Minimum ~`aisleMin` meters clear between booth side edges along X. */
+export function distributeWithAisles(count: number, boothWidth: number, aisleMin = 6): number[] {
   if (count <= 0) return [];
-  const step = Math.max(unit * 1.15, unit + 1);
+  const step = boothWidth + aisleMin;
   const total = (count - 1) * step;
   const start = -total / 2;
   return Array.from({ length: count }, (_, i) => start + i * (total / Math.max(count - 1, 1)));
@@ -275,11 +261,27 @@ export async function buildHall(
   floor.receiveShadow = true;
   scene.add(floor);
 
-  const carpet = new THREE.Mesh(new THREE.PlaneGeometry(HALL.w * 0.92, 8), assets.carpetMat);
+  const carpet = new THREE.Mesh(new THREE.PlaneGeometry(HALL.w * 0.92, 9), assets.carpetMat);
   carpet.rotation.x = -Math.PI / 2;
   carpet.position.set(0, 0.003, 0);
   carpet.receiveShadow = true;
   scene.add(carpet);
+
+  const runner = new THREE.Mesh(
+    new THREE.PlaneGeometry(11, HALL.d * 0.92),
+    new THREE.MeshPhysicalMaterial({
+      color: PROSPECTUS.runner,
+      metalness: 0.02,
+      roughness: 0.88,
+      envMapIntensity: 0.25,
+      clearcoat: 0.06,
+      clearcoatRoughness: 0.55,
+    })
+  );
+  runner.rotation.x = -Math.PI / 2;
+  runner.position.set(0, 0.006, 0);
+  runner.receiveShadow = true;
+  scene.add(runner);
 
   const wallMat = assets.wallMat;
 
@@ -355,7 +357,7 @@ export async function buildHall(
   archLed.position.set(0, archH - 0.5, archZ + 0.5);
   scene.add(archLed);
 
-  const entranceTex = makeLabelTexture("ExpoVR", "Powered by mybestbrokers.com", { h: 320, mainPx: 96, subPx: 32 });
+  const entranceTex = makeProspectusEntranceTexture();
   const entrancePlane = new THREE.Mesh(
     new THREE.PlaneGeometry(14, 4.5),
     new THREE.MeshPhysicalMaterial({
@@ -376,14 +378,18 @@ export async function buildHall(
   const di = brokers.filter((b) => b.tier === "diamond");
   const go = brokers.filter((b) => b.tier === "gold");
 
-  const tiX = distributeCenters(ti.length, 14);
-  const diX = distributeCenters(di.length, 9);
-  const goX = distributeCenters(go.length, 6);
+  const tiX = distributeWithAisles(ti.length, 14, 6);
+  const diX = distributeWithAisles(di.length, 9, 5);
+  const goX = distributeWithAisles(go.length, 6, 4);
+
+  const rowTitaniumZ = -42;
+  const rowDiamondZ = -14;
+  const rowGoldZ = 22;
 
   onProgress?.("Building booths (logos & representatives)…");
-  const tiBooths = await Promise.all(ti.map((b, i) => createBoothAsync(b, tiX[i]!, -35, 14, 8, 7)));
-  const diBooths = await Promise.all(di.map((b, i) => createBoothAsync(b, diX[i]!, -10, 9, 6, 5)));
-  const goBooths = await Promise.all(go.map((b, i) => createBoothAsync(b, goX[i]!, 18, 6, 5, 4)));
+  const tiBooths = await Promise.all(ti.map((b, i) => createBoothAsync(b, tiX[i]!, rowTitaniumZ, 14, 8, 7)));
+  const diBooths = await Promise.all(di.map((b, i) => createBoothAsync(b, diX[i]!, rowDiamondZ, 9, 6, 5)));
+  const goBooths = await Promise.all(go.map((b, i) => createBoothAsync(b, goX[i]!, rowGoldZ, 6, 5, 4)));
 
   for (const b of [...tiBooths, ...diBooths, ...goBooths]) {
     scene.add(b);
@@ -393,16 +399,23 @@ export async function buildHall(
   const rowSign = (text: string, z: number, color: number) => {
     const canvas = document.createElement("canvas");
     canvas.width = 1536;
-    canvas.height = 160;
+    canvas.height = 200;
     const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = "rgba(0,0,0,0)";
+    const bg = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    bg.addColorStop(0, "#05080e");
+    bg.addColorStop(0.5, "#0c1528");
+    bg.addColorStop(1, "#05080e");
+    ctx.fillStyle = bg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.font = "700 96px Barlow Condensed, sans-serif";
+    ctx.strokeStyle = "rgba(201,168,76,0.5)";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(24, 20, canvas.width - 48, canvas.height - 40);
+    ctx.font = "700 84px Barlow Condensed, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = `#${new THREE.Color(color).getHexString()}`;
     ctx.shadowColor = "#000";
-    ctx.shadowBlur = 24;
+    ctx.shadowBlur = 28;
     ctx.fillText(text, canvas.width / 2, canvas.height / 2);
     const tex = new THREE.CanvasTexture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
@@ -420,42 +433,46 @@ export async function buildHall(
         envMapIntensity: 0.5,
       })
     );
-    mesh.position.set(0, 10.2, z);
-    mesh.rotation.x = -0.12;
+    mesh.position.set(0, 11.2, z);
+    mesh.rotation.x = -0.1;
     scene.add(mesh);
   };
 
-  rowSign("TITANIUM SPONSORS", -35, 0xd4a843);
-  rowSign("DIAMOND SPONSORS", -10, 0xc0c8d4);
-  rowSign("GOLD EXHIBITORS", 18, 0xb87333);
+  rowSign("TITANIUM SPONSORS", rowTitaniumZ, 0xd4a843);
+  rowSign("DIAMOND SPONSORS", rowDiamondZ, 0xc0c8d4);
+  rowSign("GOLD EXHIBITORS", rowGoldZ, 0xb87333);
 
-  const ambient = new THREE.AmbientLight(0x4a5a78, 0.22);
+  const ambient = new THREE.AmbientLight(0x6a7a94, 0.18);
   scene.add(ambient);
 
-  const hemi = new THREE.HemisphereLight(0x9db4d8, 0x06080c, 0.35);
+  const hemi = new THREE.HemisphereLight(0xb8c8e2, 0x080c12, 0.42);
   scene.add(hemi);
 
-  const key = new THREE.DirectionalLight(0xfff5e8, 1.35);
-  key.position.set(28, 42, 22);
+  const key = new THREE.DirectionalLight(0xfff6ed, 1.55);
+  key.position.set(32, 48, 28);
   key.castShadow = true;
   key.shadow.mapSize.set(4096, 4096);
   key.shadow.camera.near = 5;
   key.shadow.camera.far = 200;
-  key.shadow.camera.left = -70;
-  key.shadow.camera.right = 70;
-  key.shadow.camera.top = 70;
-  key.shadow.camera.bottom = -70;
+  key.shadow.camera.left = -82;
+  key.shadow.camera.right = 82;
+  key.shadow.camera.top = 78;
+  key.shadow.camera.bottom = -78;
   key.shadow.bias = -0.00015;
   key.shadow.normalBias = 0.025;
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0x8899ff, 0.35);
-  fill.position.set(-40, 25, -10);
+  const fill = new THREE.DirectionalLight(0xa8b8e8, 0.42);
+  fill.position.set(-48, 32, -18);
   scene.add(fill);
 
-  for (const z of [-35, -10, 18]) {
-    const pl = new THREE.PointLight(0xffe6cc, 18, 95, 2);
-    pl.position.set(0, 9.5, z);
+  const rim = new THREE.DirectionalLight(0xffe8d0, 0.55);
+  rim.position.set(0, 18, -40);
+  scene.add(rim);
+
+  for (const z of [rowTitaniumZ, rowDiamondZ, rowGoldZ]) {
+    const pl = new THREE.PointLight(0xffead8, 22, 110, 2);
+    pl.position.set(0, 10.5, z);
     pl.castShadow = false;
     scene.add(pl);
   }

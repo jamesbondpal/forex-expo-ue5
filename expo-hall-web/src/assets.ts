@@ -125,12 +125,13 @@ export async function loadAssets(
     normalMap: mNor,
     normalScale: new THREE.Vector2(0.35, 0.35),
     roughnessMap: mRough,
-    metalness: 0.12,
+    color: new THREE.Color(0xf0e8de),
+    metalness: 0.1,
     roughness: 1,
-    envMapIntensity: 1.15,
-    clearcoat: 0.45,
-    clearcoatRoughness: 0.28,
-    reflectivity: 0.65,
+    envMapIntensity: 1.05,
+    clearcoat: 0.52,
+    clearcoatRoughness: 0.24,
+    reflectivity: 0.62,
   });
 
   const carpetMat = new THREE.MeshPhysicalMaterial({

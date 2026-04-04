@@ -6,6 +6,24 @@ const FAVICON_URLS = (domain: string) => [
   `https://icons.duckduckgo.com/ip3/${encodeURIComponent(domain)}.ico`,
 ];
 
+/** Deterministic “real” portrait URLs (RandomUser stock photos — demo only, not broker staff). */
+export function representativePhotoUrl(seed: string): string {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const idx = Math.abs(h) % 99;
+  const women = (Math.abs(h >> 8) & 1) === 0;
+  const gender = women ? "women" : "men";
+  return `https://randomuser.me/api/portraits/${gender}/${idx}.jpg`;
+}
+
+/** Same URL as `loadPortraitTexture` — for HTML `<img>` in the side panel. */
+export function representativePortraitUrl(seed: string): string {
+  return representativePhotoUrl(seed);
+}
+
 export function makeBrandedBackWallTexture(
   broker: { name: string; code: string; primary: string },
   logoImage: HTMLImageElement | null
@@ -17,8 +35,8 @@ export function makeBrandedBackWallTexture(
   c.height = h;
   const ctx = c.getContext("2d")!;
   const grad = ctx.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0, "#f8fafc");
-  grad.addColorStop(1, "#e8ecf2");
+  grad.addColorStop(0, "#f7f4ef");
+  grad.addColorStop(1, "#e2dcd2");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, w, h);
 
@@ -40,14 +58,14 @@ export function makeBrandedBackWallTexture(
     ctx.fillText(broker.code, w / 2, pad + 60 + 100);
   }
 
-  ctx.fillStyle = "#1a1f2e";
+  ctx.fillStyle = "#141a24";
   ctx.font = '600 52px "DM Sans", sans-serif';
   ctx.textAlign = "center";
   ctx.fillText(broker.name, w / 2, h * 0.72);
 
-  ctx.fillStyle = "rgba(26,31,46,0.55)";
-  ctx.font = '400 28px "DM Sans", sans-serif';
-  ctx.fillText("Official partner · ExpoVR", w / 2, h * 0.8);
+  ctx.fillStyle = "rgba(20,26,36,0.55)";
+  ctx.font = '400 26px "DM Sans", sans-serif';
+  ctx.fillText("Forex Expo Dubai · WTC · MENA", w / 2, h * 0.8);
 
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -76,13 +94,8 @@ function tryLoadImage(url: string): Promise<HTMLImageElement | null> {
   });
 }
 
-/** Same URL as `loadPortraitTexture` — for HTML `<img>` in the side panel. */
-export function representativePortraitUrl(seed: string): string {
-  return `https://api.dicebear.com/7.x/notionists/png?seed=${encodeURIComponent(seed)}&size=256&backgroundColor=f0f4f8`;
-}
-
 export async function loadPortraitTexture(seed: string): Promise<THREE.Texture> {
-  const url = representativePortraitUrl(seed);
+  const url = representativePhotoUrl(seed);
   return new Promise((resolve) => {
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = "anonymous";
@@ -90,6 +103,8 @@ export async function loadPortraitTexture(seed: string): Promise<THREE.Texture> 
       url,
       (tex) => {
         tex.colorSpace = THREE.SRGBColorSpace;
+        tex.minFilter = THREE.LinearMipmapLinearFilter;
+        tex.generateMipmaps = true;
         resolve(tex);
       },
       undefined,

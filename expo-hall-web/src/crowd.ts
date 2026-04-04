@@ -29,9 +29,9 @@ export function addCrowd(scene: THREE.Scene, count: number): THREE.Group[] {
 
     g.add(body, head);
     g.position.set(
-      (Math.random() - 0.5) * 100,
+      (Math.random() - 0.5) * 118,
       0,
-      (Math.random() - 0.5) * 60
+      (Math.random() - 0.5) * 78
     );
     g.userData.walkSpeed = 0.4 + Math.random() * 0.5;
     g.userData.walkAngle = Math.random() * Math.PI * 2;
