@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import type { Broker } from "./brokers";
+import type { Broker, Representative } from "./brokers";
 import type { LoadedAssets } from "./assets";
+import { fetchFaviconImage, loadPortraitTexture, makeBrandedBackWallTexture } from "./logoLoader";
 
 export const HALL = { w: 120, d: 80, ceiling: 12 };
 export const COL = { hall: 0x030507, surface: 0x080c14, fog: 0x04060a };
@@ -40,19 +41,70 @@ export function makeLabelTexture(
   return tex;
 }
 
-function createBooth(
+function addStaffFigure(
+  parent: THREE.Group,
+  broker: Broker,
+  _rep: Representative,
+  portraitMap: THREE.Texture,
+  xOff: number,
+  _width: number,
+  depth: number,
+  _height: number
+) {
+  const g = new THREE.Group();
+  const r = 0.17;
+  const len = 0.68;
+  const suit = new THREE.MeshPhysicalMaterial({
+    color: broker.secondary,
+    metalness: 0.38,
+    roughness: 0.52,
+    envMapIntensity: 0.55,
+  });
+  const body = new THREE.Mesh(new THREE.CapsuleGeometry(r, len, 6, 12), suit);
+  const yBot = 0.08 + r + len / 2;
+  body.position.y = yBot;
+  body.castShadow = true;
+
+  const skin = new THREE.MeshPhysicalMaterial({
+    color: 0xf0d0c0,
+    roughness: 0.62,
+    metalness: 0,
+    envMapIntensity: 0.35,
+  });
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.12, 14, 14), skin);
+  head.position.y = yBot + len / 2 + r + 0.12;
+  head.castShadow = true;
+
+  const face = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.24, 0.24),
+    new THREE.MeshPhysicalMaterial({
+      map: portraitMap,
+      metalness: 0,
+      roughness: 0.45,
+      transparent: true,
+    })
+  );
+  face.position.set(0, head.position.y, 0.14);
+
+  g.add(body, head, face);
+  g.position.set(xOff, 0, -depth * 0.22);
+  parent.add(g);
+}
+
+function buildBoothMeshes(
   broker: Broker,
   x: number,
   z: number,
   width: number,
   depth: number,
-  height: number
+  height: number,
+  backWallTex: THREE.CanvasTexture,
+  portraitTex: [THREE.Texture, THREE.Texture]
 ): THREE.Group {
   const g = new THREE.Group();
   g.position.set(x, 0, z);
   const prim = hexColor(broker.primary);
   const sec = hexColor(broker.secondary);
-
   const rad = 0.06;
   const seg = 2;
 
@@ -72,20 +124,30 @@ function createBooth(
   platform.receiveShadow = true;
   g.add(platform);
 
-  const back = new THREE.Mesh(
-    new RoundedBoxGeometry(width * 0.98, height * 0.72, 0.14, seg, rad * 0.8),
+  const backing = new THREE.Mesh(
+    new THREE.BoxGeometry(width * 0.99, height * 0.74, 0.06),
     new THREE.MeshPhysicalMaterial({
-      color: 0xf0f2f6,
-      metalness: 0.04,
-      roughness: 0.78,
-      envMapIntensity: 0.55,
-      clearcoat: 0.06,
-      clearcoatRoughness: 0.5,
+      color: 0xd8dce4,
+      metalness: 0.05,
+      roughness: 0.85,
     })
   );
-  back.position.set(0, 0.08 + (height * 0.72) / 2, -depth / 2 + 0.08);
-  back.castShadow = true;
-  g.add(back);
+  backing.position.set(0, 0.08 + (height * 0.74) / 2, -depth / 2 + 0.05);
+  g.add(backing);
+
+  const logoWall = new THREE.Mesh(
+    new THREE.PlaneGeometry(width * 0.92, height * 0.62),
+    new THREE.MeshPhysicalMaterial({
+      map: backWallTex,
+      metalness: 0.04,
+      roughness: 0.55,
+      envMapIntensity: 0.45,
+      clearcoat: 0.08,
+      clearcoatRoughness: 0.4,
+    })
+  );
+  logoWall.position.set(0, 0.08 + (height * 0.62) / 2 + 0.1, -depth / 2 + 0.1);
+  g.add(logoWall);
 
   const fascia = new THREE.Mesh(
     new RoundedBoxGeometry(width * 1.02, 0.55, 0.2, seg, rad),
@@ -148,7 +210,7 @@ function createBooth(
   g.add(sL, sR);
 
   const screen = new THREE.Mesh(
-    new THREE.PlaneGeometry(width * 0.35, height * 0.25),
+    new THREE.PlaneGeometry(width * 0.32, height * 0.14),
     new THREE.MeshPhysicalMaterial({
       color: 0x050a14,
       emissive: 0x2a5080,
@@ -160,12 +222,36 @@ function createBooth(
       clearcoatRoughness: 0.1,
     })
   );
-  screen.position.set(0, height * 0.48, -depth / 2 + 0.09);
+  screen.position.set(width * 0.22, height * 0.78, -depth / 2 + 0.11);
   g.add(screen);
+
+  const sx = width * 0.22;
+  addStaffFigure(g, broker, broker.representatives[0], portraitTex[0]!, -sx, width, depth, height);
+  addStaffFigure(g, broker, broker.representatives[1], portraitTex[1]!, sx, width, depth, height);
 
   g.userData.broker = broker as unknown as Record<string, unknown>;
   g.userData.isBooth = true;
   return g;
+}
+
+async function createBoothAsync(
+  broker: Broker,
+  x: number,
+  z: number,
+  width: number,
+  depth: number,
+  height: number
+): Promise<THREE.Group> {
+  const logoImg = await fetchFaviconImage(broker.domain);
+  const backWallTex = makeBrandedBackWallTexture(
+    { name: broker.name, code: broker.code, primary: broker.primary },
+    logoImg
+  );
+  const [p0, p1] = await Promise.all([
+    loadPortraitTexture(broker.representatives[0].portraitSeed),
+    loadPortraitTexture(broker.representatives[1].portraitSeed),
+  ]);
+  return buildBoothMeshes(broker, x, z, width, depth, height, backWallTex, [p0, p1]);
 }
 
 export function distributeCenters(count: number, unit: number): number[] {
@@ -176,11 +262,12 @@ export function distributeCenters(count: number, unit: number): number[] {
   return Array.from({ length: count }, (_, i) => start + i * (total / Math.max(count - 1, 1)));
 }
 
-export function buildHall(
+export async function buildHall(
   scene: THREE.Scene,
   brokers: Broker[],
-  assets: LoadedAssets
-): THREE.Group[] {
+  assets: LoadedAssets,
+  onProgress?: (msg: string) => void
+): Promise<THREE.Group[]> {
   const booths: THREE.Group[] = [];
 
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(HALL.w, HALL.d), assets.floorMat);
@@ -290,25 +377,18 @@ export function buildHall(
   const go = brokers.filter((b) => b.tier === "gold");
 
   const tiX = distributeCenters(ti.length, 14);
-  ti.forEach((b, i) => {
-    const booth = createBooth(b, tiX[i]!, -35, 14, 8, 7);
-    scene.add(booth);
-    booths.push(booth);
-  });
-
   const diX = distributeCenters(di.length, 9);
-  di.forEach((b, i) => {
-    const booth = createBooth(b, diX[i]!, -10, 9, 6, 5);
-    scene.add(booth);
-    booths.push(booth);
-  });
-
   const goX = distributeCenters(go.length, 6);
-  go.forEach((b, i) => {
-    const booth = createBooth(b, goX[i]!, 18, 6, 5, 4);
-    scene.add(booth);
-    booths.push(booth);
-  });
+
+  onProgress?.("Building booths (logos & representatives)…");
+  const tiBooths = await Promise.all(ti.map((b, i) => createBoothAsync(b, tiX[i]!, -35, 14, 8, 7)));
+  const diBooths = await Promise.all(di.map((b, i) => createBoothAsync(b, diX[i]!, -10, 9, 6, 5)));
+  const goBooths = await Promise.all(go.map((b, i) => createBoothAsync(b, goX[i]!, 18, 6, 5, 4)));
+
+  for (const b of [...tiBooths, ...diBooths, ...goBooths]) {
+    scene.add(b);
+    booths.push(b);
+  }
 
   const rowSign = (text: string, z: number, color: number) => {
     const canvas = document.createElement("canvas");

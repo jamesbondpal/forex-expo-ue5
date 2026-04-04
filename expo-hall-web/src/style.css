@@ -173,6 +173,52 @@ body {
   color: #b8c0d0;
 }
 
+.panel-reps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.panel-reps .rep {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.5rem 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(212, 168, 67, 0.15);
+}
+
+.panel-reps .rep img {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #1a2230;
+}
+
+.panel-reps .rep .meta {
+  min-width: 0;
+}
+
+.panel-reps .rep .meta strong {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #e8eaef;
+}
+
+.panel-reps .rep .meta span {
+  display: block;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: #8b95a8;
+  margin-top: 0.15rem;
+}
+
 #panel-features {
   margin: 0;
   padding-left: 1.1rem;

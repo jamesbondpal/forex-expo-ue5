@@ -12,6 +12,8 @@ import { BROKERS } from "./brokers";
 import type { Broker } from "./brokers";
 import { loadAssets } from "./assets";
 import { buildHall, HALL, COL } from "./scene";
+import { addCrowd, animateCrowd } from "./crowd";
+import { representativePortraitUrl } from "./logoLoader";
 
 function setupPanel(): {
   show: (b: Broker) => void;
@@ -20,12 +22,31 @@ function setupPanel(): {
   const panel = document.getElementById("panel")!;
   const nameEl = document.getElementById("panel-name")!;
   const tagEl = document.getElementById("panel-tag")!;
+  const repsEl = document.getElementById("panel-reps")!;
   const featEl = document.getElementById("panel-features")!;
   const closeBtn = document.getElementById("panel-close")!;
 
   const show = (b: Broker) => {
     nameEl.textContent = b.name;
     tagEl.textContent = b.tagline;
+    repsEl.innerHTML = "";
+    for (const rep of b.representatives) {
+      const wrap = document.createElement("div");
+      wrap.className = "rep";
+      const img = document.createElement("img");
+      img.alt = "";
+      img.loading = "lazy";
+      img.src = representativePortraitUrl(rep.portraitSeed);
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const strong = document.createElement("strong");
+      strong.textContent = rep.name;
+      const span = document.createElement("span");
+      span.textContent = rep.title;
+      meta.append(strong, span);
+      wrap.append(img, meta);
+      repsEl.appendChild(wrap);
+    }
     featEl.innerHTML = "";
     for (const f of b.features) {
       const li = document.createElement("li");
@@ -84,6 +105,7 @@ composer.addPass(smaaPass);
 composer.addPass(outputPass);
 
 let booths: THREE.Group[] = [];
+let crowdWalkers: THREE.Group[] = [];
 let disposeAssets: (() => void) | null = null;
 
 async function bootstrap() {
@@ -99,7 +121,10 @@ async function bootstrap() {
     rect.rotation.x = -Math.PI / 2;
     scene.add(rect);
 
-    booths = buildHall(scene, BROKERS, assets);
+    booths = await buildHall(scene, BROKERS, assets, (msg) => {
+      loadingText.textContent = msg;
+    });
+    crowdWalkers = addCrowd(scene, 42);
   } catch (e) {
     console.error(e);
     loadingText.textContent = "Failed to load assets. Run npm run build from expo-hall-web and ensure public/polyhaven exists.";
@@ -178,6 +203,8 @@ function animate() {
   const p = camera.position;
   p.x = THREE.MathUtils.clamp(p.x, -HALL.w / 2 + 2, HALL.w / 2 - 2);
   p.z = THREE.MathUtils.clamp(p.z, -HALL.d / 2 + 3, HALL.d / 2 - 2);
+
+  animateCrowd(crowdWalkers, dt, HALL);
 
   let nearest: Broker | null = null;
   let best = TRIGGER + 1;

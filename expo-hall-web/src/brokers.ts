@@ -1,5 +1,12 @@
 export type Tier = "titanium" | "diamond" | "gold";
 
+export interface Representative {
+  name: string;
+  title: string;
+  /** Seed for portrait (DiceBear); unique per person */
+  portraitSeed: string;
+}
+
 export interface Broker {
   id: string;
   name: string;
@@ -9,7 +16,17 @@ export interface Broker {
   code: string;
   tagline: string;
   features: [string, string, string];
+  /** Public site domain for favicon/logo fetch */
+  domain: string;
+  /** Two booth staff (illustrative demo personas — not affiliated with brokers) */
+  representatives: [Representative, Representative];
 }
+
+const R = (name: string, title: string, seed: string): Representative => ({
+  name,
+  title,
+  portraitSeed: seed,
+});
 
 export const BROKERS: Broker[] = [
   {
@@ -21,6 +38,8 @@ export const BROKERS: Broker[] = [
     code: "PP",
     tagline: "Raw Spreads from 0.0 pips",
     features: ["MT4 / MT5 / cTrader", "Razor Account", "ASIC / FCA / CySEC regulated"],
+    domain: "pepperstone.com",
+    representatives: [R("Amira Hassan", "Regional Head of Partnerships · MENA", "pp-a1"), R("James Okonkwo", "Senior Institutional Sales", "pp-a2")],
   },
   {
     id: "ex",
@@ -31,6 +50,8 @@ export const BROKERS: Broker[] = [
     code: "EX",
     tagline: "#1 by Trading Volume Globally",
     features: ["Instant withdrawals 24/7", "MT4 / MT5", "FCA / CySEC / FSCA"],
+    domain: "exness.com",
+    representatives: [R("Elena Volkov", "Global Exhibitions Lead", "ex-a1"), R("Marcus Webb", "IB & Affiliate Manager", "ex-a2")],
   },
   {
     id: "xm",
@@ -41,6 +62,8 @@ export const BROKERS: Broker[] = [
     code: "XM",
     tagline: "130+ Countries, No Re-quotes",
     features: ["Negative balance protection", "Free daily research", "MT4 / MT5"],
+    domain: "xm.com",
+    representatives: [R("Sofia Lindström", "Market Analysis Director", "xm-a1"), R("Omar Rahman", "Middle East Sales Director", "xm-a2")],
   },
   {
     id: "cap",
@@ -51,6 +74,8 @@ export const BROKERS: Broker[] = [
     code: "CAP",
     tagline: "AI-Powered CFD Trading",
     features: ["AI bias detection", "3000+ instruments", "FCA / CySEC / ASIC"],
+    domain: "capital.com",
+    representatives: [R("Daniel Foster", "Head of Product Marketing", "cap-a1"), R("Priya Nair", "Partnerships · GCC", "cap-a2")],
   },
   {
     id: "xtb",
@@ -61,6 +86,8 @@ export const BROKERS: Broker[] = [
     code: "XTB",
     tagline: "0% Commission on Real Stocks",
     features: ["xStation 5", "5500+ instruments", "Warsaw Stock Exchange listed"],
+    domain: "xtb.com",
+    representatives: [R("Tomasz Krawiec", "European Markets Lead", "xtb-a1"), R("Layla Farouk", "MENA Business Development", "xtb-a2")],
   },
   {
     id: "ava",
@@ -71,6 +98,8 @@ export const BROKERS: Broker[] = [
     code: "AVA",
     tagline: "9 Regulators Worldwide",
     features: ["AvaProtect & AvaOptions", "MT4 / MT5", "UAE regulated"],
+    domain: "avatrade.com",
+    representatives: [R("Claire Dubois", "Retail Sales Director", "ava-a1"), R("Khalid Al-Mansoori", "UAE Desk Lead", "ava-a2")],
   },
   {
     id: "ic",
@@ -81,6 +110,8 @@ export const BROKERS: Broker[] = [
     code: "IC",
     tagline: "True ECN — Execution Under 40ms",
     features: ["EUR/USD from 0.0 pips", "MT4 / MT5 / cTrader", "ASIC regulated"],
+    domain: "icmarkets.com",
+    representatives: [R("Ryan Mitchell", "ECN Liquidity Specialist", "ic-a1"), R("Yuki Tanaka", "APAC Partnerships", "ic-a2")],
   },
   {
     id: "hfm",
@@ -91,6 +122,8 @@ export const BROKERS: Broker[] = [
     code: "HFM",
     tagline: "DFSA Dubai Licensed",
     features: ["Arabic support", "Copy trading", "DFSA / FCA"],
+    domain: "hfm.com",
+    representatives: [R("Fatima Al-Zaabi", "DFSA Compliance Liaison", "hfm-a1"), R("Steve Caldwell", "Copy Trading Lead", "hfm-a2")],
   },
   {
     id: "mb",
@@ -101,6 +134,8 @@ export const BROKERS: Broker[] = [
     code: "MB",
     tagline: "20,000+ Instruments, 14 Licenses",
     features: ["Most regulated globally", "Est. 2005", "MENA offices"],
+    domain: "multibankfx.com",
+    representatives: [R("Victoria Chen", "Global Institutional Desk", "mb-a1"), R("Hassan Barakat", "Regional VP Sales", "mb-a2")],
   },
   {
     id: "bb",
@@ -111,6 +146,8 @@ export const BROKERS: Broker[] = [
     code: "BB",
     tagline: "Institutional ECN Liquidity",
     features: ["MT4 / MT5 / cTrader / TradingView", "FMA New Zealand", "ECN access"],
+    domain: "blackbull.com",
+    representatives: [R("Liam O'Connor", "Prime Brokerage Sales", "bb-a1"), R("Anika Singh", "TradingView Integrations", "bb-a2")],
   },
   {
     id: "fp",
@@ -121,6 +158,8 @@ export const BROKERS: Broker[] = [
     code: "FP",
     tagline: "10,000+ Instruments, ECN from 0.0",
     features: ["Share CFDs", "ASIC / CySEC regulated", "Australian broker"],
+    domain: "fpmarkets.com",
+    representatives: [R("Brett Hamilton", "Share CFDs Specialist", "fp-a1"), R("Mei Lin", "Partnerships Australia", "fp-a2")],
   },
   {
     id: "ad",
@@ -131,6 +170,8 @@ export const BROKERS: Broker[] = [
     code: "AD",
     tagline: "Abu Dhabi Based, FSRA Licensed",
     features: ["Institutional prime brokerage", "ADGM regulated", "MT4 / MT5"],
+    domain: "adss.com",
+    representatives: [R("Saeed Al-Mazrouei", "ADGM Institutional Lead", "ad-a1"), R("Nina Petrov", "Prime Services Director", "ad-a2")],
   },
   {
     id: "van",
@@ -141,6 +182,8 @@ export const BROKERS: Broker[] = [
     code: "VAN",
     tagline: "RAW ECN from 0.0 — 5M+ Users",
     features: ["Social trading", "ASIC / FCA", "Multiple award winner"],
+    domain: "vantage.com",
+    representatives: [R("Chris Palmer", "Social Trading Lead", "van-a1"), R("Aisha Bello", "MENA Growth Manager", "van-a2")],
   },
   {
     id: "al",
@@ -151,6 +194,8 @@ export const BROKERS: Broker[] = [
     code: "AL",
     tagline: "Est. 1998 — 25 Years of Trading",
     features: ["PAMM accounts", "Copy trading", "MT4 / MT5"],
+    domain: "alpari.com",
+    representatives: [R("Igor Sokolov", "PAMM & Investment Products", "al-a1"), R("Grace Oduya", "Copy Trading Manager", "al-a2")],
   },
   {
     id: "nc",
@@ -161,6 +206,8 @@ export const BROKERS: Broker[] = [
     code: "NC",
     tagline: "UAE Based — Arabic First",
     features: ["UAE SCA + FCA licensed", "Islamic finance", "Noor Index"],
+    domain: "noorcapital.com",
+    representatives: [R("Majid Al-Falasi", "Islamic Finance Desk", "nc-a1"), R("Leila Haddad", "Arabic Client Relations", "nc-a2")],
   },
   {
     id: "inx",
@@ -171,6 +218,8 @@ export const BROKERS: Broker[] = [
     code: "INX",
     tagline: "IX Social Copy Trading",
     features: ["FCA regulated", "100+ countries", "Alpine F1 partner"],
+    domain: "infinox.com",
+    representatives: [R("Edward Wright", "IX Social Product Lead", "inx-a1"), R("Camille Rousseau", "EU Partnerships", "inx-a2")],
   },
   {
     id: "bds",
@@ -181,6 +230,8 @@ export const BROKERS: Broker[] = [
     code: "BDS",
     tagline: "1.7M+ Users — EU Regulated",
     features: ["CySEC regulated", "Award-winning", "MENA presence"],
+    domain: "bdswiss.com",
+    representatives: [R("Stefan Mueller", "EU Regulatory Affairs", "bds-a1"), R("Yasmin Hossain", "MENA Affiliates", "bds-a2")],
   },
   {
     id: "vt",
@@ -191,6 +242,8 @@ export const BROKERS: Broker[] = [
     code: "VT",
     tagline: "1,000+ Instruments — ASIC",
     features: ["Newcastle United FC partner", "MT4 / MT5", "Australian regulated"],
+    domain: "vtmarkets.com",
+    representatives: [R("Jack Fraser", "Sports Partnerships", "vt-a1"), R("Emily Zhang", "ASIC Desk Lead", "vt-a2")],
   },
   {
     id: "tm",
@@ -201,6 +254,8 @@ export const BROKERS: Broker[] = [
     code: "TM",
     tagline: "Chelsea FC & Brooklyn Nets Partner",
     features: ["ASIC regulated", "MT4 / MT5", "Sports partnerships"],
+    domain: "tmgm.com",
+    representatives: [R("Alex Park", "Brand Partnerships", "tm-a1"), R("Sienna Rossi", "Retail Sales Manager", "tm-a2")],
   },
   {
     id: "fxv",
@@ -211,6 +266,8 @@ export const BROKERS: Broker[] = [
     code: "FXV",
     tagline: "Ultra-Low Cost ECN Trading",
     features: ["CySEC regulated", "Raw spreads 0.0", "MT5 · Finvasia Group"],
+    domain: "fxview.com",
+    representatives: [R("Raj Malhotra", "ECN Pricing Lead", "fxv-a1"), R("Ewa Kaminska", "EU Sales", "fxv-a2")],
   },
   {
     id: "bm",
@@ -221,6 +278,8 @@ export const BROKERS: Broker[] = [
     code: "BM",
     tagline: "Gold, Oil, Commodities CFDs",
     features: ["Commodity CFDs specialist", "Gold / silver / oil / gas", "Fast execution"],
+    domain: "basemarkets.com",
+    representatives: [R("Thomas Berg", "Commodities Strategist", "bm-a1"), R("Ivana Horvat", "Energy Desk", "bm-a2")],
   },
   {
     id: "bp",
@@ -231,5 +290,7 @@ export const BROKERS: Broker[] = [
     code: "BP",
     tagline: "Institutional Prime Brokerage",
     features: ["B2B solutions", "Tier-1 liquidity", "White label & IB programs"],
+    domain: "blackbull.com",
+    representatives: [R("Gregory Stein", "Prime Brokerage B2B", "bp-a1"), R("Monica Reyes", "White Label Programs", "bp-a2")],
   },
 ];
