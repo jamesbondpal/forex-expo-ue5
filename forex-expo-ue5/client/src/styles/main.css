@@ -968,6 +968,143 @@ body {
   border-radius: 3px;
 }
 
+/* --- Fallback Message --- */
+#fallback-message {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s;
+}
+
+#fallback-message.hidden {
+  display: none;
+}
+
+.fallback-content {
+  text-align: center;
+  color: var(--white);
+  max-width: 420px;
+  padding: 40px;
+}
+
+.fallback-content h2 {
+  font-size: 1.5rem;
+  margin: 0 0 12px;
+}
+
+.fallback-content p {
+  color: var(--gray-300);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.fallback-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+#retry-btn,
+#fallback-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+#retry-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  border: 1px solid var(--glass-border);
+}
+
+#retry-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+#fallback-btn {
+  background: var(--red);
+  color: var(--white);
+}
+
+#fallback-btn:hover {
+  filter: brightness(1.15);
+}
+
+/* --- Fallback Demo Bar --- */
+#fallback-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: linear-gradient(180deg, rgba(10,22,40,0.95), rgba(10,22,40,0.8));
+  backdrop-filter: blur(var(--blur));
+  border-bottom: 1px solid var(--glass-border);
+  padding: 12px 20px;
+  pointer-events: auto;
+}
+
+#fallback-bar.hidden {
+  display: none;
+}
+
+.fallback-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.fallback-bar-label {
+  color: var(--red);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border: 1px solid rgba(232,25,44,0.3);
+  border-radius: 4px;
+}
+
+.fallback-bar-brokers {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.fallback-broker-btn {
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.fallback-broker-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--broker-clr, var(--gold));
+  box-shadow: 0 0 12px rgba(255,255,255,0.05);
+}
+
+.fallback-seminar-btn {
+  margin-left: auto;
+}
+
 /* ============================================================
    Mobile Breakpoints
    ============================================================ */

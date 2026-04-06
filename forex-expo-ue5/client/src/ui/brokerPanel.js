@@ -5,6 +5,7 @@
  */
 
 import { openModal } from './overlay.js';
+import { API_BASE } from '../config.js';
 
 // ---------------------------------------------------------------------------
 // State
@@ -32,7 +33,7 @@ async function fetchBroker(brokerId) {
     return brokerCache.get(brokerId);
   }
   try {
-    const res = await fetch(`/api/brokers/${brokerId}`);
+    const res = await fetch(`${API_BASE}/api/brokers/${brokerId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const broker = await res.json();
     brokerCache.set(brokerId, broker);

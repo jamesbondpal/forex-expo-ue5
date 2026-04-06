@@ -5,6 +5,7 @@
  */
 
 import { sessionId, sendToUE5 } from '../main.js';
+import { API_BASE } from '../config.js';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -395,7 +396,7 @@ async function handleSubmit(brokerId) {
   btn.disabled = true;
 
   try {
-    const res = await fetch('/api/book-meeting', {
+    const res = await fetch(`${API_BASE}/api/book-meeting`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -483,7 +484,7 @@ export function open({ brokerId } = {}) {
   if (infoEl && brokerId) {
     infoEl.textContent = `Broker: ${brokerId}`;
     // Try to fetch broker details for agent name
-    fetch(`/api/brokers/${brokerId}`)
+    fetch(`${API_BASE}/api/brokers/${brokerId}`)
       .then((r) => r.json())
       .then((broker) => {
         if (broker && broker.agent) {

@@ -4,6 +4,8 @@
  * with quick-question chips, typing indicators, and suggested actions.
  */
 
+import { API_BASE } from '../config.js';
+
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
@@ -34,7 +36,7 @@ const brokerCache = new Map();
 async function fetchBroker(brokerId) {
   if (brokerCache.has(brokerId)) return brokerCache.get(brokerId);
   try {
-    const res = await fetch(`/api/brokers/${brokerId}`);
+    const res = await fetch(`${API_BASE}/api/brokers/${brokerId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     brokerCache.set(brokerId, data);
@@ -267,7 +269,7 @@ async function sendMessage(text) {
 
   try {
     const sessionId = await getSessionId();
-    const res = await fetch('/api/ai-chat', {
+    const res = await fetch(`${API_BASE}/api/ai-chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

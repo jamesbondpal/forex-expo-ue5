@@ -28,7 +28,7 @@ export const sessionId = (() => {
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
-const WS_URL = `ws://${location.hostname}:3000/ws`;
+import { WS_URL } from './config.js';
 
 const DEFAULT_ICE_SERVERS = [
   { urls: 'stun:stun.l.google.com:19302' },
@@ -116,6 +116,7 @@ function updateLoadingStatus(text) {
 }
 
 function showLoading() {
+  if (fallbackShown) return; // Don't override fallback
   if (loadingScreen) loadingScreen.classList.remove('hidden');
   if (fallbackMessage) fallbackMessage.classList.add('hidden');
 }
@@ -124,7 +125,13 @@ function hideLoading() {
   if (loadingScreen) loadingScreen.classList.add('hidden');
 }
 
+let fallbackShown = false;
+
 function showFallback() {
+  fallbackShown = true;
+  intentionalClose = true;
+  clearTimeout(reconnectTimer);
+  clearTimeout(offerTimer);
   if (loadingScreen) loadingScreen.classList.add('hidden');
   if (fallbackMessage) fallbackMessage.classList.remove('hidden');
 }
@@ -145,7 +152,6 @@ function connectWebSocket() {
   ws = new WebSocket(WS_URL);
 
   ws.onopen = () => {
-    reconnectAttempts = 0;
     ws.send(JSON.stringify({ type: 'identify', sessionId }));
   };
 
@@ -198,15 +204,29 @@ function handleSignallingMessage(msg) {
 // ---------------------------------------------------------------------------
 // Config — receive playerId and optional ICE servers
 // ---------------------------------------------------------------------------
+let offerTimer = null;
+const OFFER_TIMEOUT_MS = 8000; // Show fallback if no offer within 8s
+
 function handleConfig(msg) {
   playerId = msg.playerId ?? playerId;
 
-  if (msg.iceServers && Array.isArray(msg.iceServers) && msg.iceServers.length > 0) {
+  if (msg.peerConnectionOptions && msg.peerConnectionOptions.iceServers) {
+    iceServers = msg.peerConnectionOptions.iceServers;
+  } else if (msg.iceServers && Array.isArray(msg.iceServers) && msg.iceServers.length > 0) {
     iceServers = msg.iceServers;
   }
 
   setConnectionState('signalling');
   createPeerConnection();
+
+  // If UE5 doesn't send an offer within timeout, offer fallback
+  clearTimeout(offerTimer);
+  offerTimer = setTimeout(() => {
+    if (!videoEl.srcObject) {
+      console.log('[PS] No offer received — showing fallback');
+      showFallback();
+    }
+  }, OFFER_TIMEOUT_MS);
 }
 
 // ---------------------------------------------------------------------------
@@ -258,6 +278,7 @@ function createPeerConnection() {
       stream.addTrack(event.track);
       videoEl.srcObject = stream;
     }
+    reconnectAttempts = 0;
     setConnectionState('streaming');
   };
 
@@ -297,6 +318,8 @@ function setupDataChannel() {
 // Handle SDP offer from server
 // ---------------------------------------------------------------------------
 async function handleOffer(msg) {
+  clearTimeout(offerTimer);
+
   if (!pc) {
     console.warn('[PS] Received offer but no peer connection exists');
     return;
@@ -360,7 +383,7 @@ export function sendToUE5(action, data = {}) {
 // Reconnection with exponential backoff
 // ---------------------------------------------------------------------------
 function scheduleReconnect() {
-  if (intentionalClose) return;
+  if (intentionalClose || fallbackShown) return;
 
   reconnectAttempts++;
 

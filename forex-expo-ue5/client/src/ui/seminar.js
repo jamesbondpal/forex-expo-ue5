@@ -5,6 +5,7 @@
  */
 
 import { sendToUE5 } from '../main.js';
+import { API_BASE } from '../config.js';
 
 // ---------------------------------------------------------------------------
 // Seminar data
@@ -601,7 +602,7 @@ async function submitQuestion() {
   if (btn) btn.disabled = true;
 
   try {
-    const res = await fetch('/api/seminar/question', {
+    const res = await fetch(`${API_BASE}/api/seminar/question`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question, visitorName: 'Visitor' }),
@@ -653,7 +654,7 @@ function onUE5Message(event) {
 // ---------------------------------------------------------------------------
 async function fetchQuestions() {
   try {
-    const res = await fetch('/api/seminar/questions');
+    const res = await fetch(`${API_BASE}/api/seminar/questions`);
     const data = await res.json();
     if (data.questions && Array.isArray(data.questions)) {
       questions = data.questions;

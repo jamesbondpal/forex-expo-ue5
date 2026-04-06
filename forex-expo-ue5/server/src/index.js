@@ -12,6 +12,14 @@ import { loadBrokers } from './brokerManager.js';
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:8080').split(',');
 
+// In development, also allow any localhost port
+function corsOrigin(origin, callback) {
+  if (!origin) return callback(null, true); // Allow non-browser requests
+  if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+  if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return callback(null, true);
+  callback(new Error('CORS not allowed'));
+}
+
 const app = express();
 const server = http.createServer(app);
 
@@ -19,7 +27,7 @@ const server = http.createServer(app);
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(morgan('combined'));
 app.use(express.json({ limit: '1mb' }));
-app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }));
+app.use(cors({ origin: corsOrigin, credentials: true }));
 
 // Rate limiting on API routes
 const limiter = rateLimit({

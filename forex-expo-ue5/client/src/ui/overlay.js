@@ -238,6 +238,55 @@ function handleUE5Message(event) {
 }
 
 // ---------------------------------------------------------------------------
+// Fallback mode
+// ---------------------------------------------------------------------------
+
+function enterFallbackMode() {
+  console.log('[overlay] Entering fallback mode');
+
+  // Hide fallback prompt, show fallback bar
+  const fallbackMsg = document.getElementById('fallback-message');
+  const loadingScreen = document.getElementById('loading-screen');
+  const fallbackBar = document.getElementById('fallback-bar');
+  if (fallbackMsg) fallbackMsg.classList.add('hidden');
+  if (loadingScreen) loadingScreen.classList.add('hidden');
+  if (fallbackBar) fallbackBar.classList.remove('hidden');
+
+  // Show zone label for context
+  updateZone('main_hall');
+
+  // Show a simulated visitor count
+  updateVisitorCount(247);
+
+  // Wire up broker buttons
+  document.querySelectorAll('.fallback-broker-btn[data-broker]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const brokerId = btn.dataset.broker;
+      showBrokerPanel(brokerId);
+    });
+  });
+
+  // Wire up seminar button
+  const seminarBtn = document.querySelector('.fallback-seminar-btn');
+  if (seminarBtn) {
+    seminarBtn.addEventListener('click', () => {
+      openModal('seminar');
+    });
+  }
+
+  // Tick visitor count randomly
+  setInterval(() => {
+    const el = ensureVisitorCount();
+    const num = el.querySelector('.visitor-number');
+    if (num) {
+      const current = parseInt(num.textContent, 10) || 247;
+      const delta = Math.floor(Math.random() * 5) - 2;
+      num.textContent = String(Math.max(200, current + delta));
+    }
+  }, 5000);
+}
+
+// ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
 
@@ -252,14 +301,22 @@ function init() {
   // Listen for messages from the Pixel Streaming layer
   window.addEventListener('ue5-message', handleUE5Message);
 
+  // Listen for fallback mode request
+  window.addEventListener('enter-fallback-mode', enterFallbackMode);
+
   // Allow Escape to close any open modal
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeModal();
+      hideBrokerPanel();
     }
   });
 
   console.log('[overlay] UI overlay initialised');
 }
 
-document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
