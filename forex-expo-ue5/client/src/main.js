@@ -128,19 +128,25 @@ function hideLoading() {
 let fallbackShown = false;
 
 function showFallback() {
+  if (fallbackShown) return;
   fallbackShown = true;
   intentionalClose = true;
   clearTimeout(reconnectTimer);
   clearTimeout(offerTimer);
-  if (loadingScreen) loadingScreen.classList.add('hidden');
-  if (fallbackMessage) fallbackMessage.classList.remove('hidden');
+  // Close WS to stop any further signalling
+  if (ws) { try { ws.close(); } catch(_){} ws = null; }
 
-  // Auto-enter fallback mode after 3 seconds
-  setTimeout(() => {
-    if (fallbackMessage && !fallbackMessage.classList.contains('hidden')) {
-      window.dispatchEvent(new CustomEvent('enter-fallback-mode'));
-    }
-  }, 3000);
+  // Skip the "UE5 Stream Unavailable" intermediate screen entirely.
+  // Go straight to fallback mode with broker buttons.
+  if (loadingScreen) loadingScreen.classList.add('hidden');
+  if (fallbackMessage) fallbackMessage.classList.add('hidden');
+
+  // Directly activate fallback bar
+  const fallbackBar = document.getElementById('fallback-bar');
+  if (fallbackBar) fallbackBar.classList.remove('hidden');
+
+  // Dispatch event for overlay.js to wire up buttons
+  window.dispatchEvent(new CustomEvent('enter-fallback-mode'));
 }
 
 // ---------------------------------------------------------------------------
