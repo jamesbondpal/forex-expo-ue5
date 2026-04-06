@@ -38,7 +38,7 @@ const DEFAULT_ICE_SERVERS = [
 
 const RECONNECT_BASE_MS = 1000;
 const RECONNECT_MAX_MS = 30000;
-const MAX_ATTEMPTS_BEFORE_FALLBACK = 3;
+const MAX_ATTEMPTS_BEFORE_FALLBACK = 1;
 
 // ---------------------------------------------------------------------------
 // State
@@ -269,9 +269,9 @@ function createPeerConnection() {
         setConnectionState('disconnected');
         break;
       case 'failed':
-        setConnectionState('failed');
+        // Don't reconnect on ICE failure — let the offer timer trigger fallback
+        console.log('[PS] ICE failed — waiting for offer timeout to trigger fallback');
         closePeerConnection();
-        scheduleReconnect();
         break;
     }
   };
