@@ -147,6 +147,7 @@ function showFallback() {
 // WebSocket signalling
 // ---------------------------------------------------------------------------
 function connectWebSocket() {
+  if (fallbackShown) return; // Don't reconnect once fallback is active
   if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
     return;
   }
@@ -493,3 +494,12 @@ document.addEventListener('visibilitychange', () => {
 // ---------------------------------------------------------------------------
 console.log(`[PS] Forex Expo Dubai — session ${sessionId}`);
 connectWebSocket();
+
+// ABSOLUTE FALLBACK — no matter what happens with WS/WebRTC,
+// if we don't have video within 4 seconds, force fallback mode.
+setTimeout(() => {
+  if (!fallbackShown && !videoEl.srcObject) {
+    console.log('[PS] Absolute fallback timeout — forcing fallback mode');
+    showFallback();
+  }
+}, 4000);
