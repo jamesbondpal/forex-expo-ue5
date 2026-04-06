@@ -1,0 +1,10 @@
+{
+  "name": "forex-expo-ue5-client",
+  "version": "1.0.0",
+  "description": "Forex Expo Dubai — Pixel Streaming Client UI",
+  "private": true,
+  "scripts": {
+    "serve": "npx serve . -p 8080",
+    "dev": "npx serve . -p 8080"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "currentSession": {
+    "title": "Mastering Risk Management in Volatile Forex Markets",
+    "presenter": {
+      "name": "Dr. Omar Al-Farsi",
+      "role": "Chief Market Analyst, Pepperstone MENA",
+      "bio": "15+ years FX experience, CISI qualified, former HSBC trading desk. Regular speaker at Money Expo, iFX EXPO, and Forex Expo Dubai."
+    },
+    "slides": [
+      {
+        "title": "Why Risk Management Matters",
+        "bullets": [
+          "90% of retail traders lose money — risk management is the differentiator",
+          "Volatility is not the enemy — unmanaged exposure is",
+          "Case study: CHF flash crash 2015 — lessons learned"
+        ]
+      },
+      {
+        "title": "The 2% Rule & Position Sizing",
+        "bullets": [
+          "Never risk more than 2% of account equity per trade",
+          "Position size = (Account × Risk%) / (Entry - Stop Loss)",
+          "Adapting position size to volatility (ATR-based sizing)"
+        ]
+      },
+      {
+        "title": "Stop Loss Strategies",
+        "bullets": [
+          "Fixed pip stops vs. volatility-based stops",
+          "Trailing stops: when and how to use them",
+          "The hidden danger of mental stops — always use hard stops"
+        ]
+      },
+      {
+        "title": "Correlation & Portfolio Risk",
+        "bullets": [
+          "Trading EUR/USD and GBP/USD = double exposure to USD",
+          "Correlation matrix: identifying hidden portfolio risk",
+          "Hedging strategies for multi-pair portfolios"
+        ]
+      },
+      {
+        "title": "Risk Management Tools",
+        "bullets": [
+          "MT5 built-in risk tools and margin calculator",
+          "Third-party tools: Myfxbook, FX Blue, Trade Analytics",
+          "Automated risk management with Expert Advisors"
+        ]
+      },
+      {
+        "title": "Q&A — Ask Me Anything",
+        "bullets": [
+          "Submit your questions via the Q&A panel",
+          "Top questions will be answered live",
+          "Book a 1-on-1 session for personalised advice"
+        ]
+      }
+    ],
+    "startTime": "10:30",
+    "duration": 60
+  },
+  "schedule": [
+    {
+      "id": "s1",
+      "time": "10:30 AM",
+      "title": "Mastering Risk Management in Volatile Forex Markets",
+      "presenter": "Dr. Omar Al-Farsi",
+      "role": "Chief Market Analyst, Pepperstone MENA",
+      "status": "live",
+      "duration": 60
+    },
+    {
+      "id": "s2",
+      "time": "11:30 AM",
+      "title": "AI-Powered Trading: The Capital.com Approach",
+      "presenter": "Sarah Chen",
+      "role": "Head of AI Research, Capital.com",
+      "status": "upcoming",
+      "duration": 45
+    },
+    {
+      "id": "s3",
+      "time": "1:00 PM",
+      "title": "ECN/STP Execution: What Traders Need to Know",
+      "presenter": "Ahmed Hassan",
+      "role": "Head of Trading, Base Markets",
+      "status": "upcoming",
+      "duration": 45
+    },
+    {
+      "id": "s4",
+      "time": "2:00 PM",
+      "title": "Copy Trading Strategies for Passive Income",
+      "presenter": "Lisa Park",
+      "role": "Strategy Manager, Pepperstone",
+      "status": "upcoming",
+      "duration": 45
+    },
+    {
+      "id": "s5",
+      "time": "3:00 PM",
+      "title": "Regulation & Fund Safety in MENA",
+      "presenter": "James Worthington",
+      "role": "Compliance Director, Capital.com",
+      "status": "upcoming",
+      "duration": 45
+    },
+    {
+      "id": "s6",
+      "time": "4:00 PM",
+      "title": "Building a Trading Bot: From Idea to Live",
+      "presenter": "Dr. Yusuf Mansouri",
+      "role": "Quantitative Analyst, Base Markets",
+      "status": "upcoming",
+      "duration": 60
+    }
+  ],
+  "seedQuestions": [
+    {
+      "question": "What's the optimal risk-reward ratio for day trading forex?",
+      "visitorName": "Ahmed K.",
+      "answer": "I recommend a minimum of 1:2 risk-reward for day trading. This means if your stop loss is 20 pips, your take profit should be at least 40 pips. This way, even with a 40% win rate, you remain profitable."
+    },
+    {
+      "question": "How do you handle risk during major news events like NFP?",
+      "visitorName": "Maria S.",
+      "answer": "During high-impact news, I recommend either closing positions 30 minutes before the release, or reducing position size by 50%. Alternatively, use options strategies to hedge. Never increase leverage before news events."
+    },
+    {
+      "question": "Is it better to use a fixed lot size or scale based on account equity?",
+      "visitorName": "David L.",
+      "answer": "Always scale based on equity — this is what the 2% rule is about. Fixed lot sizes don't adapt to your growing or shrinking account. Use the formula: Position Size = (Equity × 0.02) / (SL in pips × pip value)."
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "brokers": [
+    {
+      "id": "pepperstone",
+      "name": "Pepperstone",
+      "tier": "TITANIUM",
+      "tagline": "Fast Execution. Global Markets.",
+      "description": "Award-winning Australian broker with ultra-fast execution, raw spreads from 0.0 pips, and regulation across 6 jurisdictions. Trusted by 400,000+ traders worldwide.",
+      "primary": "#0a3161",
+      "accent": "#e8192c",
+      "badge": "linear-gradient(135deg,#c0c0c0,#ececec,#a0a0a0)",
+      "agent": {
+        "name": "James Al-Rashid",
+        "role": "Senior Account Manager · Pepperstone MENA",
+        "aiName": "Aria",
+        "email": "james@pepperstone.com"
+      },
+      "features": [
+        "Raw spreads from 0.0 pips",
+        "6 global regulations",
+        "MT4, MT5, cTrader, TradingView",
+        "cTrader Copy & DupliTrade",
+        "Free VPS for active traders",
+        "Swap-free Islamic accounts"
+      ],
+      "quickQuestions": [
+        "What are your EUR/USD spreads?",
+        "How do I open an account?",
+        "What leverage do you offer?",
+        "Tell me about MT5",
+        "What regulations cover you?"
+      ],
+      "boothPosition": { "x": -22, "z": -15 },
+      "tier_size": "8x6m"
+    },
+    {
+      "id": "capital",
+      "name": "Capital.com",
+      "tier": "PLATINUM",
+      "tagline": "Smart Trading. AI-Powered Insights.",
+      "description": "Next-generation trading platform with proprietary AI that detects emotional bias and helps you trade smarter. 3,000+ markets with zero commission and spreads from 0.6 pips.",
+      "primary": "#1a1a2e",
+      "accent": "#00d4aa",
+      "badge": "linear-gradient(135deg,#e5e4e2,#f5f5f5,#c0c0c0)",
+      "agent": {
+        "name": "Sara Mahmoud",
+        "role": "Regional Manager · Capital.com MENA",
+        "aiName": "Max",
+        "email": "sara@capital.com"
+      },
+      "features": [
+        "AI bias detection technology",
+        "0.6 pip EUR/USD spreads",
+        "3,000+ CFD markets",
+        "Zero commission trading",
+        "Real stocks (UK/EU)",
+        "Minimum deposit $20"
+      ],
+      "quickQuestions": [
+        "Tell me about your AI features",
+        "What spreads do you offer?",
+        "How does zero commission work?",
+        "Can I trade real stocks?",
+        "What is your minimum deposit?"
+      ],
+      "boothPosition": { "x": 0, "z": -15 },
+      "tier_size": "6x5m"
+    },
+    {
+      "id": "basemarkets",
+      "name": "Base Markets",
+      "tier": "GOLD",
+      "tagline": "True ECN. Institutional Pricing.",
+      "description": "Pure ECN/STP broker offering direct market access with institutional-grade pricing. FIX API available for algorithmic traders. Tiered IB programme with industry-leading rebates.",
+      "primary": "#0d1b2a",
+      "accent": "#ffd700",
+      "badge": "linear-gradient(135deg,#b8860b,#ffd700,#daa520)",
+      "agent": {
+        "name": "Khalid Al-Mansouri",
+        "role": "Head of Partnerships · Base Markets",
+        "aiName": "Nova",
+        "email": "khalid@basemarkets.com"
+      },
+      "features": [
+        "True ECN/STP execution",
+        "Raw spreads from 0.0 pips",
+        "FIX API & REST API",
+        "Tiered IB rebates",
+        "Crypto deposits (USDT)",
+        "Equinix data centers"
+      ],
+      "quickQuestions": [
+        "Tell me about your ECN execution",
+        "What is your IB programme like?",
+        "Do you offer FIX API?",
+        "What are your spreads?",
+        "How do crypto deposits work?"
+      ],
+      "boothPosition": { "x": 22, "z": -15 },
+      "tier_size": "5x4m"
+    }
+  ]
+}

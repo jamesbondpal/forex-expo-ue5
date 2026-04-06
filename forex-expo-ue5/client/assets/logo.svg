@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" viewBox="0 0 200 60">
+  <text x="100" y="24" text-anchor="middle" fill="#ffffff" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="4">FOREX EXPO</text>
+  <line x1="80" y1="32" x2="120" y2="32" stroke="#d4a853" stroke-width="2" stroke-linecap="round"/>
+  <text x="100" y="48" text-anchor="middle" fill="#e8192c" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="6">DUBAI</text>
+</svg>

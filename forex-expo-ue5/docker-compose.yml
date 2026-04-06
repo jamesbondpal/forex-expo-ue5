@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  signalling:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: forex-expo-signalling
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./server/.env
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - expo-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: forex-expo-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./client:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./deploy/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      signalling:
+        condition: service_healthy
+    restart: always
+    networks:
+      - expo-net
+
+networks:
+  expo-net:
+    driver: bridge

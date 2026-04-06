@@ -1,0 +1,15 @@
+{
+  "StartVideoMuted": false,
+  "AutoPlayVideo": true,
+  "AutoConnect": true,
+  "ss": "ws://localhost:3000",
+  "UseUrlParams": true,
+  "HoveringMouse": true,
+  "MatchViewportRes": true,
+  "controlScheme": "LockedMouse",
+  "KeyboardInput": true,
+  "MouseInput": true,
+  "TouchInput": true,
+  "GamepadInput": false,
+  "FakeMouseWithTouches": true
+}

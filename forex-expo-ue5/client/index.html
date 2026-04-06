@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0a1628">
+
+  <meta property="og:title" content="Forex Expo Dubai — Virtual Experience">
+  <meta property="og:description" content="Explore the Forex Expo Dubai in an immersive 3D virtual environment powered by Unreal Engine 5.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/og-image.jpg">
+  <meta property="og:url" content="https://expo.forexexpo.com">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Forex Expo Dubai — Virtual Experience">
+  <meta name="twitter:description" content="Explore the Forex Expo Dubai in an immersive 3D virtual environment powered by Unreal Engine 5.">
+  <meta name="twitter:image" content="/assets/og-image.jpg">
+
+  <title>Forex Expo Dubai — Virtual Experience</title>
+
+  <link rel="icon" type="image/png" href="/assets/favicon.png">
+  <link rel="stylesheet" href="src/styles/main.css">
+</head>
+<body>
+  <!-- UE5 Pixel Streaming container -->
+  <div id="ps-container">
+    <video id="ue5-stream" autoplay playsinline></video>
+  </div>
+
+  <!-- UI overlay rendered above the stream -->
+  <div id="ui-overlay">
+    <!-- Loading screen shown during WebRTC setup -->
+    <div id="loading-screen">
+      <div class="loading-content">
+        <div class="logo-wrapper">
+          <div class="logo-text">
+            <span class="logo-forex">FOREX</span>
+            <span class="logo-expo">EXPO</span>
+            <span class="logo-dubai">DUBAI</span>
+          </div>
+          <div class="logo-pulse"></div>
+        </div>
+
+        <div class="connection-steps">
+          <div class="step" data-step="ws">
+            <div class="step-indicator"></div>
+            <span class="step-label">Connecting to server</span>
+          </div>
+          <div class="step" data-step="webrtc">
+            <div class="step-indicator"></div>
+            <span class="step-label">Establishing stream</span>
+          </div>
+          <div class="step" data-step="stream">
+            <div class="step-indicator"></div>
+            <span class="step-label">Receiving video</span>
+          </div>
+        </div>
+
+        <p id="loading-status">Initializing...</p>
+      </div>
+    </div>
+
+    <!-- Fallback message when connection fails -->
+    <div id="fallback-message" class="hidden">
+      <div class="fallback-content">
+        <h2>Connection Unavailable</h2>
+        <p>Unable to establish a live stream connection after multiple attempts.</p>
+        <button id="retry-btn">Retry Connection</button>
+        <button id="fallback-btn">Enter Fallback Mode</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
