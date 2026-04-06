@@ -91,29 +91,29 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
+renderer.toneMappingExposure = 1.35;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 RectAreaLightUniformsLib.init();
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(COL.fog);
-scene.fog = new THREE.FogExp2(COL.fog, 0.006);
+scene.fog = new THREE.FogExp2(COL.fog, 0.003);
 
 const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.08, 520);
-camera.position.set(0, 1.65, 20);
+camera.position.set(0, 1.65, 0);
 camera.rotation.order = "YXZ"; // Yaw-Pitch order for FPS camera
 
-// Face into the hall (negative Z), slightly downward to see the floor
+// Face into the hall (negative Z), angled down to see booths + floor
 const yaw = Math.PI;
-const pitch = -0.08;
+const pitch = -0.12;
 camera.rotation.set(pitch, yaw, 0);
 
 // ─── Post-processing ──────────────────────────────────────────────────────────
 
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.4, 0.7, 0.22);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.8, 0.8, 0.15);
 const SMAAFactory = SMAAPass as unknown as new (w: number, h: number) => InstanceType<typeof SMAAPass>;
 const smaaPass = new SMAAFactory(window.innerWidth, window.innerHeight);
 const filmPass = new FilmPass(0.06, false);
@@ -183,7 +183,7 @@ const hint = document.getElementById("hint")!;
 hint.textContent = "WASD move · Drag to look · Scroll zoom";
 
 let cameraYaw = yaw;
-let cameraPitch = -0.08;
+let cameraPitch = -0.12;
 let isDragging = false;
 let lastMouseX = 0;
 let lastMouseY = 0;
