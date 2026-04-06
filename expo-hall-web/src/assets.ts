@@ -125,42 +125,43 @@ export async function loadAssets(
   configureRepeat(cpDiff, 4, 32);
   configureNonColor(cpRough, 4, 32);
 
+  // Light grey floor — real expo hall style
   const floorMat = new THREE.MeshPhysicalMaterial({
     map: mDiff,
     normalMap: mNor,
-    normalScale: new THREE.Vector2(0.2, 0.2),
+    normalScale: new THREE.Vector2(0.15, 0.15),
     roughnessMap: mRough,
-    color: new THREE.Color(0xf0e8de),
-    metalness: 0.1,
-    roughness: 0.05,
-    envMapIntensity: 1.6,
-    clearcoat: 0.85,
-    clearcoatRoughness: 0.08,
-    reflectivity: 0.9,
+    color: new THREE.Color(0xc8c4be),
+    metalness: 0.05,
+    roughness: 0.55,
+    envMapIntensity: 0.5,
+    clearcoat: 0.2,
+    clearcoatRoughness: 0.3,
   });
 
+  // Light grey carpet with subtle warmth
   const carpetMat = new THREE.MeshPhysicalMaterial({
     map: cpDiff,
     roughnessMap: cpRough,
+    color: new THREE.Color(0xa8a4a0),
     metalness: 0,
-    roughness: 1,
-    envMapIntensity: 0.5,
-    sheen: 0.5,
+    roughness: 0.9,
+    envMapIntensity: 0.3,
+    sheen: 0.2,
     sheenRoughness: 0.85,
-    sheenColor: new THREE.Color(0x0a0e1a),
+    sheenColor: new THREE.Color(0x908880),
   });
 
+  // Light walls — real expo halls have light-colored walls
   const wallMat = new THREE.MeshPhysicalMaterial({
     map: cDiff,
     normalMap: cNor,
-    normalScale: new THREE.Vector2(0.6, 0.6),
+    normalScale: new THREE.Vector2(0.4, 0.4),
     roughnessMap: cRough,
-    color: new THREE.Color(0x080c14),
-    metalness: 0.15,
-    roughness: 1,
-    envMapIntensity: 0.7,
-    clearcoat: 0.08,
-    clearcoatRoughness: 0.6,
+    color: new THREE.Color(0xd0d0d8),
+    metalness: 0.05,
+    roughness: 0.8,
+    envMapIntensity: 0.4,
   });
 
   const trussMat = new THREE.MeshPhysicalMaterial({

@@ -108,76 +108,74 @@ function buildBoothMeshes(
   platform.receiveShadow = true;
   g.add(platform);
 
+  // Bright white back wall — like real expo booth walls
   const backing = new THREE.Mesh(
     new THREE.BoxGeometry(width * 0.99, height * 0.74, 0.06),
     new THREE.MeshPhysicalMaterial({
-      color: 0xd8dce4,
-      metalness: 0.05,
-      roughness: 0.85,
+      color: 0xf0f0f0,
+      metalness: 0.02,
+      roughness: 0.7,
+      envMapIntensity: 0.3,
     })
   );
   backing.position.set(0, 0.08 + (height * 0.74) / 2, -depth / 2 + 0.05);
   g.add(backing);
 
+  // Branded logo wall — emissive so it glows even in dim areas
   const logoWall = new THREE.Mesh(
     new THREE.PlaneGeometry(width * 0.92, height * 0.62),
     new THREE.MeshPhysicalMaterial({
       map: backWallTex,
-      metalness: 0.04,
-      roughness: 0.55,
-      envMapIntensity: 0.45,
-      clearcoat: 0.08,
-      clearcoatRoughness: 0.4,
+      emissive: 0xffffff,
+      emissiveIntensity: 0.3,
+      metalness: 0.02,
+      roughness: 0.5,
+      envMapIntensity: 0.4,
     })
   );
   logoWall.position.set(0, 0.08 + (height * 0.62) / 2 + 0.1, -depth / 2 + 0.1);
   g.add(logoWall);
 
-  // Fascia — glowing brand bar (blooms with UnrealBloom)
+  // Fascia — brand colored bar at top of booth
   const fascia = new THREE.Mesh(
     new RoundedBoxGeometry(width * 1.02, 0.55, 0.2, seg, rad),
     new THREE.MeshPhysicalMaterial({
       color: prim,
       emissive: prim,
-      emissiveIntensity: 5.0,
+      emissiveIntensity: 1.5,
       metalness: 0.55,
       roughness: 0.15,
       envMapIntensity: 0.7,
       clearcoat: 0.85,
       clearcoatRoughness: 0.12,
-      iridescence: 0.12,
-      iridescenceIOR: 1.5,
-      toneMapped: false,
     })
   );
   fascia.position.set(0, height - 0.28, -depth / 2 + 0.12);
   g.add(fascia);
 
-  // Top accent strip — very bright, blooms heavily
+  // Top accent strip — subtle LED glow
   const strip = new THREE.Mesh(
-    new RoundedBoxGeometry(width * 1.04, 0.12, 0.14, seg, rad * 0.5),
+    new RoundedBoxGeometry(width * 1.04, 0.08, 0.1, seg, rad * 0.5),
     new THREE.MeshPhysicalMaterial({
       color: prim,
       emissive: prim,
-      emissiveIntensity: 8.0,
+      emissiveIntensity: 2.5,
       metalness: 0.6,
       roughness: 0.1,
-      toneMapped: false,
     })
   );
   strip.position.set(0, height - 0.04, -depth / 2 + 0.14);
   g.add(strip);
 
-  // Floor accent strip — glowing boundary line at booth front
+  // Floor accent strip — subtle boundary line
   const floorStrip = new THREE.Mesh(
-    new THREE.BoxGeometry(width * 1.06, 0.02, 0.08),
+    new THREE.BoxGeometry(width * 1.06, 0.015, 0.06),
     new THREE.MeshPhysicalMaterial({
       color: prim,
       emissive: prim,
-      emissiveIntensity: 4.0,
-      toneMapped: false,
+      emissiveIntensity: 1.5,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.7,
     })
   );
   floorStrip.position.set(0, 0.01, depth / 2 + 0.04);
@@ -211,17 +209,18 @@ function buildBoothMeshes(
   sR.position.x = width / 2 - 0.08;
   g.add(sL, sR);
 
+  // TV screen — bright emissive display
   const screen = new THREE.Mesh(
-    new THREE.PlaneGeometry(width * 0.32, height * 0.14),
+    new THREE.PlaneGeometry(width * 0.32, height * 0.18),
     new THREE.MeshPhysicalMaterial({
-      color: 0x050a14,
-      emissive: 0x2a5080,
-      emissiveIntensity: 0.55,
-      metalness: 0.35,
-      roughness: 0.25,
-      envMapIntensity: 0.5,
+      color: 0x101828,
+      emissive: 0x4488cc,
+      emissiveIntensity: 1.2,
+      metalness: 0.3,
+      roughness: 0.2,
+      envMapIntensity: 0.3,
       clearcoat: 0.9,
-      clearcoatRoughness: 0.1,
+      clearcoatRoughness: 0.08,
     })
   );
   screen.position.set(width * 0.22, height * 0.78, -depth / 2 + 0.11);
@@ -327,6 +326,17 @@ export async function buildHall(
   west.receiveShadow = true;
   scene.add(west);
 
+  // Light ceiling — real expo halls have white/grey ceilings
+  const ceilingMat = new THREE.MeshStandardMaterial({
+    color: 0x404048,
+    metalness: 0.1,
+    roughness: 0.9,
+  });
+  const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(HALL.w, HALL.d), ceilingMat);
+  ceiling.rotation.x = Math.PI / 2;
+  ceiling.position.y = HALL.ceiling;
+  scene.add(ceiling);
+
   const trussMat = assets.trussMat;
   for (let x = -HALL.w / 2 + 4; x < HALL.w / 2; x += 8) {
     const beam = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.5, HALL.d - 2), trussMat);
@@ -338,10 +348,9 @@ export async function buildHall(
       new THREE.MeshPhysicalMaterial({
         color: 0xffeedd,
         emissive: 0xffe8cc,
-        emissiveIntensity: 3.0,
+        emissiveIntensity: 1.5,
         metalness: 0.15,
         roughness: 0.45,
-        toneMapped: false,
       })
     );
     led.position.set(x, HALL.ceiling - 0.62, 0);
@@ -366,10 +375,9 @@ export async function buildHall(
     new THREE.MeshPhysicalMaterial({
       color: 0xe8192c,
       emissive: 0xe8192c,
-      emissiveIntensity: 2.5,
+      emissiveIntensity: 1.5,
       metalness: 0.25,
       roughness: 0.35,
-      toneMapped: false,
     })
   );
   archLed.position.set(0, archH - 0.5, archZ + 0.5);
@@ -460,17 +468,16 @@ export async function buildHall(
   rowSign("DIAMOND SPONSORS", rowDiamondZ, 0xc0c8d4);
   rowSign("GOLD EXHIBITORS", rowGoldZ, 0xb87333);
 
-  // === DRAMATIC LIGHTING SYSTEM ===
+  // === BRIGHT EXPO LIGHTING — real trade show floor is very bright ===
 
-  // Subtle ambient — keep it dark for drama
-  const ambient = new THREE.AmbientLight(0x3a4a64, 0.08);
+  const ambient = new THREE.AmbientLight(0xffffff, 1.2);
   scene.add(ambient);
 
-  const hemi = new THREE.HemisphereLight(0x8090b0, 0x040608, 0.25);
+  const hemi = new THREE.HemisphereLight(0xffffff, 0xd0d0d8, 1.5);
   scene.add(hemi);
 
-  // Key directional — warm, with high quality shadows
-  const key = new THREE.DirectionalLight(0xfff2e0, 1.8);
+  // Key directional — warm white, bright
+  const key = new THREE.DirectionalLight(0xfff8f0, 3.0);
   key.position.set(32, 48, 28);
   key.castShadow = true;
   key.shadow.mapSize.set(4096, 4096);
@@ -485,12 +492,12 @@ export async function buildHall(
   scene.add(key);
 
   // Cool fill from opposite side
-  const fill = new THREE.DirectionalLight(0x6080c0, 0.35);
+  const fill = new THREE.DirectionalLight(0x8098c0, 1.0);
   fill.position.set(-48, 32, -18);
   scene.add(fill);
 
   // Warm rim light from behind
-  const rim = new THREE.DirectionalLight(0xffd8a8, 0.6);
+  const rim = new THREE.DirectionalLight(0xffd8a8, 1.2);
   rim.position.set(0, 18, -40);
   scene.add(rim);
 
@@ -511,20 +518,20 @@ export async function buildHall(
   for (const [tier, z] of rowPositions) {
     const color = boothColors[tier] ?? 0xffffff;
 
-    // Large overhead RectAreaLight — 20m × 6m, high intensity
-    const rl = new THREE.RectAreaLight(color, 35, 20, 6);
+    // Large overhead RectAreaLight — colored wash
+    const rl = new THREE.RectAreaLight(color, 8, 16, 5);
     rl.position.set(0, HALL.ceiling - 0.8, z);
     rl.rotation.x = -Math.PI / 2;
     scene.add(rl);
 
     // Warm white fill for each row
-    const rowFill = new THREE.PointLight(0xfff0d8, 25, 80, 2);
+    const rowFill = new THREE.PointLight(0xfff0d8, 12, 60, 2);
     rowFill.position.set(0, 10.5, z);
     scene.add(rowFill);
 
     // Strong colored down-lights per row — dramatic color wash
     for (const xOff of [-18, 0, 18]) {
-      const downLight = new THREE.SpotLight(color, 60, 30, Math.PI / 5, 0.6, 1.5);
+      const downLight = new THREE.SpotLight(color, 20, 30, Math.PI / 5, 0.6, 1.5);
       downLight.position.set(xOff, HALL.ceiling - 0.5, z);
       downLight.target.position.set(xOff, 0, z);
       scene.add(downLight, downLight.target);
@@ -532,7 +539,7 @@ export async function buildHall(
 
     // Side accent spots for each row
     for (const side of [-1, 1]) {
-      const spot = new THREE.SpotLight(color, 55, 60, Math.PI / 8, 0.5, 2);
+      const spot = new THREE.SpotLight(color, 18, 50, Math.PI / 8, 0.5, 2);
       spot.position.set(side * 28, HALL.ceiling - 1, z);
       spot.target.position.set(0, 0, z);
       scene.add(spot, spot.target);
@@ -568,12 +575,11 @@ export async function buildHall(
 
   // === ANIMATED NEON WALL STRIPS ===
   const neonMat = new THREE.MeshPhysicalMaterial({
-    color: 0x00ccff,
-    emissive: 0x00aaff,
-    emissiveIntensity: 6.0,
+    color: 0x00aadd,
+    emissive: 0x0088cc,
+    emissiveIntensity: 2.0,
     metalness: 0.5,
     roughness: 0.1,
-    toneMapped: false,
   });
   const neonGeo = new THREE.BoxGeometry(HALL.w - 4, 0.08, 0.08);
 

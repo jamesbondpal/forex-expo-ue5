@@ -17,7 +17,6 @@ import { addCrowd, animateCrowd } from "./crowd";
 import { representativePortraitUrl } from "./logoLoader";
 import { resolveBoothCollisions } from "./collision";
 import {
-  applyHdrSkybox,
   clearHdrSkybox,
   loadGltfProps,
   DEFAULT_GLTF_PROPS,
@@ -91,35 +90,37 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.35;
+renderer.toneMappingExposure = 1.4;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 RectAreaLightUniformsLib.init();
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(COL.fog);
-scene.fog = new THREE.FogExp2(COL.fog, 0.003);
+scene.background = new THREE.Color(0xe8e8ec); // Bright white-grey like real expo
+scene.fog = new THREE.Fog(0xe8e8ec, 60, 180); // Linear fog for depth
 
 const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.08, 520);
-camera.position.set(0, 1.65, 0);
-camera.rotation.order = "YXZ"; // Yaw-Pitch order for FPS camera
+// Start between diamond and gold rows, facing diamond booths
+camera.position.set(0, 1.7, 5);
+camera.rotation.order = "YXZ";
 
-// Face into the hall (negative Z), angled down to see booths + floor
+// Face toward diamond booth row at z=-14
 const yaw = Math.PI;
-const pitch = -0.12;
+const pitch = -0.03;
 camera.rotation.set(pitch, yaw, 0);
 
 // ─── Post-processing ──────────────────────────────────────────────────────────
 
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.8, 0.8, 0.15);
+// Subtle bloom — only bright emissives glow, nothing else blurs
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.35, 0.3, 0.85);
 const SMAAFactory = SMAAPass as unknown as new (w: number, h: number) => InstanceType<typeof SMAAPass>;
 const smaaPass = new SMAAFactory(window.innerWidth, window.innerHeight);
-const filmPass = new FilmPass(0.06, false);
+const filmPass = new FilmPass(0.02, false); // Very subtle grain
 const vignettePass = new ShaderPass(VignetteShader);
-vignettePass.uniforms.offset.value = 0.85;
-vignettePass.uniforms.darkness.value = 1.5;
+vignettePass.uniforms.offset.value = 0.95;
+vignettePass.uniforms.darkness.value = 0.8;
 const outputPass = new OutputPass();
 
 composer.addPass(renderPass);
@@ -144,10 +145,9 @@ async function bootstrap() {
     scene.environment = assets.envMap;
     disposeAssets = assets.disposeEnv;
 
-    if (assets.backgroundEquirect) {
-      applyHdrSkybox(scene, assets.backgroundEquirect, { intensity: 0.78, blurriness: 0.12 });
-      scene.fog = new THREE.FogExp2(COL.fog, 0.003);
-    }
+    // DON'T use HDR as background — real expo halls have dark/black ceilings.
+    // HDR is used only as envMap for reflections on materials.
+    // Keep scene.background as dark color set above.
 
     const rect = new THREE.RectAreaLight(0xfff2dd, 12, HALL.w * 0.82, 4);
     rect.position.set(0, HALL.ceiling - 0.6, 0);
@@ -183,7 +183,7 @@ const hint = document.getElementById("hint")!;
 hint.textContent = "WASD move · Drag to look · Scroll zoom";
 
 let cameraYaw = yaw;
-let cameraPitch = -0.12;
+let cameraPitch = -0.03;
 let isDragging = false;
 let lastMouseX = 0;
 let lastMouseY = 0;

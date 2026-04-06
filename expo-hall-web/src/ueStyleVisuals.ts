@@ -35,15 +35,8 @@ export interface GltfInstance {
   scale: number;
 }
 
-/** Demo layout — swap URLs for your own baked / high-poly exhibition assets. */
-export const DEFAULT_GLTF_PROPS: GltfInstance[] = [
-  { url: "models/duck.glb", x: -40, z: -40, ry: 0.5, scale: 4 },
-  { url: "models/duck.glb", x: 42, z: -40, ry: -0.4, scale: 4 },
-  { url: "models/duck.glb", x: -36, z: -14, ry: 2.1, scale: 3.5 },
-  { url: "models/duck.glb", x: 34, z: -14, ry: -1.8, scale: 3.5 },
-  { url: "models/duck.glb", x: -28, z: 22, ry: 0.9, scale: 3 },
-  { url: "models/duck.glb", x: 30, z: 22, ry: -1.2, scale: 3 },
-];
+/** No demo props — ducks removed. Add real exhibition GLBs here if available. */
+export const DEFAULT_GLTF_PROPS: GltfInstance[] = [];
 
 function snapRootToGround(root: THREE.Object3D): void {
   const box = new THREE.Box3().setFromObject(root);

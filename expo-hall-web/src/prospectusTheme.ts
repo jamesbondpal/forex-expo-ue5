@@ -11,7 +11,7 @@ export const PROSPECTUS = {
   cream: 0xf2ebe0,
   crimson: 0xc41e3a,
   ink: 0x05080e,
-  runner: 0xe8dfd2,
+  runner: 0x8c1a2a, // Deep red carpet runner
 } as const;
 
 /** Canvas texture for the south entrance arch (replaces generic ExpoVR slab). */
