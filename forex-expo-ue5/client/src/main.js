@@ -224,9 +224,8 @@ function handleConfig(msg) {
   }
 
   setConnectionState('signalling');
-  createPeerConnection();
-
-  // If UE5 doesn't send an offer within timeout, offer fallback
+  // Don't create PeerConnection yet — wait for an actual offer from UE5.
+  // If no offer arrives within timeout, go straight to fallback.
   clearTimeout(offerTimer);
   offerTimer = setTimeout(() => {
     if (!videoEl.srcObject) {
@@ -327,9 +326,9 @@ function setupDataChannel() {
 async function handleOffer(msg) {
   clearTimeout(offerTimer);
 
+  // Create PeerConnection on-demand when we receive an actual offer
   if (!pc) {
-    console.warn('[PS] Received offer but no peer connection exists');
-    return;
+    createPeerConnection();
   }
 
   try {
