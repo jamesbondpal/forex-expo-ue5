@@ -128,15 +128,15 @@ export async function loadAssets(
   const floorMat = new THREE.MeshPhysicalMaterial({
     map: mDiff,
     normalMap: mNor,
-    normalScale: new THREE.Vector2(0.35, 0.35),
+    normalScale: new THREE.Vector2(0.2, 0.2),
     roughnessMap: mRough,
     color: new THREE.Color(0xf0e8de),
     metalness: 0.1,
-    roughness: 1,
-    envMapIntensity: 1.05,
-    clearcoat: 0.52,
-    clearcoatRoughness: 0.24,
-    reflectivity: 0.62,
+    roughness: 0.05,
+    envMapIntensity: 1.6,
+    clearcoat: 0.85,
+    clearcoatRoughness: 0.08,
+    reflectivity: 0.9,
   });
 
   const carpetMat = new THREE.MeshPhysicalMaterial({
@@ -144,10 +144,10 @@ export async function loadAssets(
     roughnessMap: cpRough,
     metalness: 0,
     roughness: 1,
-    envMapIntensity: 0.35,
-    sheen: 0.35,
+    envMapIntensity: 0.5,
+    sheen: 0.5,
     sheenRoughness: 0.85,
-    sheenColor: new THREE.Color(0x1a1a22),
+    sheenColor: new THREE.Color(0x0a0e1a),
   });
 
   const wallMat = new THREE.MeshPhysicalMaterial({
@@ -155,18 +155,19 @@ export async function loadAssets(
     normalMap: cNor,
     normalScale: new THREE.Vector2(0.6, 0.6),
     roughnessMap: cRough,
-    metalness: 0.06,
+    color: new THREE.Color(0x080c14),
+    metalness: 0.15,
     roughness: 1,
-    envMapIntensity: 0.45,
+    envMapIntensity: 0.7,
     clearcoat: 0.08,
     clearcoatRoughness: 0.6,
   });
 
   const trussMat = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color(0x0a0c10),
+    color: new THREE.Color(0x151820),
     metalness: 0.92,
     roughness: 0.32,
-    envMapIntensity: 1.2,
+    envMapIntensity: 1.5,
     clearcoat: 0.2,
     clearcoatRoughness: 0.4,
   });

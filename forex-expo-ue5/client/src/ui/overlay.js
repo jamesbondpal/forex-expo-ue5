@@ -10,6 +10,7 @@ import { open as openAiChat, close as closeAiChat } from './aiChat.js';
 import { open as openMt5Feed, close as closeMt5Feed } from './mt5Feed.js';
 import { open as openBooking, close as closeBooking } from './booking.js';
 import { open as openSeminar, close as closeSeminar } from './seminar.js';
+import { open as openSponsorship, close as closeSponsorship } from './sponsorship.js';
 
 // ---------------------------------------------------------------------------
 // State
@@ -21,7 +22,8 @@ const MODAL_MAP = {
   aiChat:   { open: openAiChat,   close: closeAiChat },
   mt5Feed:  { open: openMt5Feed,  close: closeMt5Feed },
   booking:  { open: openBooking,  close: closeBooking },
-  seminar:  { open: openSeminar,  close: closeSeminar },
+  seminar:      { open: openSeminar,      close: closeSeminar },
+  sponsorship:  { open: openSponsorship,  close: closeSponsorship },
 };
 
 // ---------------------------------------------------------------------------
@@ -271,6 +273,14 @@ function enterFallbackMode() {
   if (seminarBtn) {
     seminarBtn.addEventListener('click', () => {
       openModal('seminar');
+    });
+  }
+
+  // Wire up sponsorship button
+  const sponsorBtn = document.querySelector('.fallback-sponsor-btn');
+  if (sponsorBtn) {
+    sponsorBtn.addEventListener('click', () => {
+      openModal('sponsorship');
     });
   }
 

@@ -1,0 +1,644 @@
+{
+  "boothPackages": [
+    {
+      "id": "booth-titanium",
+      "name": "TITANIUM Booth",
+      "price": 75000,
+      "currency": "USD",
+      "description": "The ultimate exhibition presence at 48sqm (8x6x4m). Premium fully customizable booth with top-tier furnishings, a keynote speaking slot, and VIP access for 12 guests. Ideal for headline sponsors seeking maximum brand visibility.",
+      "features": [
+        "48sqm premium customizable booth (8x6x4m)",
+        "2 counters",
+        "4 bar stools",
+        "Round table",
+        "4 sofas",
+        "50\" TV display",
+        "Brochure stands",
+        "Ceiling banner",
+        "Award recognition",
+        "Keynote speaking slot",
+        "VIP access for 12 PAX"
+      ],
+      "category": "booth",
+      "sqm": 48,
+      "dimensions": { "width": 8, "depth": 6, "height": 4 },
+      "availability": 4,
+      "virtualOnly": false
+    },
+    {
+      "id": "booth-diamond",
+      "name": "DIAMOND Booth",
+      "price": 45000,
+      "currency": "USD",
+      "description": "A premium 30sqm (6x5x3.5m) customizable booth with extensive furnishings and branding. Includes a keynote speaking slot and VIP access for 8 guests. Perfect for established brokers wanting a commanding presence.",
+      "features": [
+        "30sqm premium customizable booth (6x5x3.5m)",
+        "2 counters",
+        "4 bar stools",
+        "Round table",
+        "3 sofas",
+        "50\" TV display",
+        "Brochure stands",
+        "Ceiling banner",
+        "Award recognition",
+        "Keynote speaking slot",
+        "VIP access for 8 PAX"
+      ],
+      "category": "booth",
+      "sqm": 30,
+      "dimensions": { "width": 6, "depth": 5, "height": 3.5 },
+      "availability": 6,
+      "virtualOnly": false
+    },
+    {
+      "id": "booth-platinum",
+      "name": "PLATINUM Booth",
+      "price": 30000,
+      "currency": "USD",
+      "description": "An 18sqm (6x3x3.5m) premium pre-built booth with professional branding elements. Includes a counter, brochure stand, roll-up banner, and VIP access for 6 guests.",
+      "features": [
+        "18sqm premium built booth (6x3x3.5m)",
+        "1 counter",
+        "Brochure stand",
+        "Roll-up banner",
+        "VIP access for 6 PAX"
+      ],
+      "category": "booth",
+      "sqm": 18,
+      "dimensions": { "width": 6, "depth": 3, "height": 3.5 },
+      "availability": 10,
+      "virtualOnly": false
+    },
+    {
+      "id": "booth-gold",
+      "name": "GOLD Booth",
+      "price": 20000,
+      "currency": "USD",
+      "description": "A 12sqm (4x3x2.5m) standard shell booth with solid furnishings and a 42\" TV. Includes seating, brochure stand, roll-up banner, and VIP access for 4 guests.",
+      "features": [
+        "12sqm standard shell booth (4x3x2.5m)",
+        "1 counter",
+        "2 bar stools",
+        "Round table",
+        "42\" TV display",
+        "Brochure stand",
+        "Roll-up banner",
+        "VIP access for 4 PAX"
+      ],
+      "category": "booth",
+      "sqm": 12,
+      "dimensions": { "width": 4, "depth": 3, "height": 2.5 },
+      "availability": 15,
+      "virtualOnly": false
+    },
+    {
+      "id": "booth-silver",
+      "name": "SILVER Booth",
+      "price": 15000,
+      "currency": "USD",
+      "description": "A 9sqm (3x3x2.5m) standard shell booth with essential amenities. Includes a counter, 42\" TV, brochure stand, and VIP access for 3 guests.",
+      "features": [
+        "9sqm standard shell booth (3x3x2.5m)",
+        "Counter",
+        "42\" TV display",
+        "Brochure stand",
+        "Roll-up banner",
+        "VIP access for 3 PAX"
+      ],
+      "category": "booth",
+      "sqm": 9,
+      "dimensions": { "width": 3, "depth": 3, "height": 2.5 },
+      "availability": 20,
+      "virtualOnly": false
+    },
+    {
+      "id": "booth-bronze",
+      "name": "BRONZE Booth",
+      "price": 10000,
+      "currency": "USD",
+      "description": "A compact 6sqm (3x2x2.5m) backwall-only booth for brokers seeking an affordable entry point. Includes VIP access for 2 guests.",
+      "features": [
+        "6sqm backwall-only booth (3x2x2.5m)",
+        "Backwall branding",
+        "VIP access for 2 PAX"
+      ],
+      "category": "booth",
+      "sqm": 6,
+      "dimensions": { "width": 3, "depth": 2, "height": 2.5 },
+      "availability": 30,
+      "virtualOnly": false
+    }
+  ],
+  "brandingOpportunities": [
+    {
+      "id": "branding-welcome-bag",
+      "name": "Welcome Bag Sponsor",
+      "price": 15000,
+      "currency": "USD",
+      "description": "Sponsor the official welcome bags distributed at registration. 2,000 branded bags handed to every attendee upon arrival, ensuring maximum brand exposure from the first moment.",
+      "features": [
+        "2,000 branded bags at registration",
+        "Logo on bag exterior",
+        "Insert branded materials inside bags",
+        "First touchpoint with all attendees"
+      ],
+      "category": "branding",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "branding-lanyard",
+      "name": "Lanyard Sponsor",
+      "price": 12000,
+      "currency": "USD",
+      "description": "Brand the official event lanyards worn by every attendee. 3,000 branded lanyards attached to all badges, keeping your logo visible throughout the entire event.",
+      "features": [
+        "3,000 branded lanyards on all badges",
+        "Continuous visibility throughout event",
+        "Logo printed on both sides",
+        "Worn by all attendees and staff"
+      ],
+      "category": "branding",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "branding-wristband",
+      "name": "Wristband Sponsor",
+      "price": 10000,
+      "currency": "USD",
+      "description": "Sponsor the event wristbands worn by all attendees. 3,000 branded wristbands provide constant brand visibility as attendees network and interact throughout the expo.",
+      "features": [
+        "3,000 branded wristbands",
+        "Worn by all attendees",
+        "Visible during handshakes and networking",
+        "Custom color and design options"
+      ],
+      "category": "branding",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "branding-networking-lounge",
+      "name": "Networking Lounge Sponsor",
+      "price": 30000,
+      "currency": "USD",
+      "description": "Full branding of the corporate networking lounge where key meetings happen. Your brand wraps the premium lounge area where decision-makers gather for private conversations.",
+      "features": [
+        "Full branded corporate lounge",
+        "Premium seating area branding",
+        "Logo on all lounge furniture and signage",
+        "Exclusive sponsor recognition in lounge"
+      ],
+      "category": "branding",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "branding-water",
+      "name": "Water Sponsor",
+      "price": 15000,
+      "currency": "USD",
+      "description": "Sponsor the hydration stations across the venue. 4 branded water kiosks placed in high-traffic areas ensure your brand is seen every time attendees grab a drink.",
+      "features": [
+        "4 branded water kiosks across venue",
+        "High-traffic placement",
+        "Branded cups and dispensers",
+        "Continuous foot traffic exposure"
+      ],
+      "category": "branding",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "branding-registration",
+      "name": "Registration Sponsor",
+      "price": 20000,
+      "currency": "USD",
+      "description": "Brand the entire registration area where every attendee checks in. Your logo appears on registration counters, kiosks, and backdrop, guaranteeing first-impression visibility.",
+      "features": [
+        "Branded registration counters",
+        "Branded check-in kiosks",
+        "Registration backdrop branding",
+        "First brand seen by every attendee"
+      ],
+      "category": "branding",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "branding-arch",
+      "name": "Arch Sponsor",
+      "price": 18000,
+      "currency": "USD",
+      "description": "Exclusive branding on the grand entrance arch. Every attendee walks under your branded arch upon entering the expo hall, creating a memorable first impression.",
+      "features": [
+        "Branded entrance arch",
+        "Visible from entire entrance area",
+        "Photo opportunity backdrop",
+        "Premium positioning at main entrance"
+      ],
+      "category": "branding",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "branding-usher",
+      "name": "Usher Sponsor",
+      "price": 8000,
+      "currency": "USD",
+      "description": "Brand the usher staff who guide attendees throughout the venue. 3 branded usher staff wearing your company colors and logo direct traffic across the expo floor.",
+      "features": [
+        "3 branded usher staff",
+        "Custom uniforms with your branding",
+        "Positioned at key navigation points",
+        "Direct attendee interaction"
+      ],
+      "category": "branding",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "branding-cover",
+      "name": "Cover Sponsor",
+      "price": 12000,
+      "currency": "USD",
+      "description": "Secure the cover of the official expo magazine or catalog. Your brand takes the prime real estate on the front cover distributed to all attendees and industry contacts.",
+      "features": [
+        "Front cover of official magazine/catalog",
+        "Distributed to all attendees",
+        "Shared with industry mailing list",
+        "Premium print placement"
+      ],
+      "category": "branding",
+      "availability": 1,
+      "virtualOnly": false
+    }
+  ],
+  "advertisingOpportunities": [
+    {
+      "id": "ad-workshop",
+      "name": "Workshop Sponsorship",
+      "price": 20000,
+      "currency": "USD",
+      "description": "Sponsor a dedicated workshop room with full branding and a speaking slot. Host educational sessions under your brand to establish thought leadership and engage directly with attendees.",
+      "features": [
+        "Branded workshop room",
+        "Speaking slot included",
+        "Room signage and materials branded",
+        "Attendee list provided post-event"
+      ],
+      "category": "advertising",
+      "availability": 4,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-candy-girl",
+      "name": "Candy Girl Sponsor",
+      "price": 5000,
+      "currency": "USD",
+      "description": "Branded candy distribution throughout the expo floor. A promotional team distributes branded sweets to attendees, creating a memorable and shareable brand interaction.",
+      "features": [
+        "Branded candy distribution",
+        "Roaming promotional staff",
+        "Custom branded packaging",
+        "High attendee engagement"
+      ],
+      "category": "advertising",
+      "availability": 2,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-violinist",
+      "name": "Violinist Sponsor",
+      "price": 8000,
+      "currency": "USD",
+      "description": "A dedicated violinist performs at or near your booth, drawing foot traffic and creating an elegant atmosphere. Your branding accompanies the performance area.",
+      "features": [
+        "Dedicated violinist at your booth",
+        "Branded performance area",
+        "Draws foot traffic to your booth",
+        "Premium ambiance enhancement"
+      ],
+      "category": "advertising",
+      "availability": 2,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-galeton",
+      "name": "Galeton Sponsorship",
+      "price": 25000,
+      "currency": "USD",
+      "description": "Premium Galeton sponsorship package providing high-visibility branding across the expo. A flagship advertising opportunity with extensive brand placement and recognition.",
+      "features": [
+        "Premium venue branding",
+        "High-visibility placement",
+        "Exclusive sponsor recognition",
+        "Extended brand exposure"
+      ],
+      "category": "advertising",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-premium-qahwa",
+      "name": "Premium Qahwa Sponsorship",
+      "price": 35000,
+      "currency": "USD",
+      "description": "Sponsor the traditional Arabic coffee service at the expo. Branded Qahwa stations serve premium Arabic coffee to attendees, blending cultural hospitality with your brand presence.",
+      "features": [
+        "Branded Arabic coffee service stations",
+        "Traditional Qahwa presentation",
+        "Multiple serving points across venue",
+        "Cultural hospitality branding"
+      ],
+      "category": "advertising",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-cloak-room",
+      "name": "Cloak Room Sponsorship",
+      "price": 10000,
+      "currency": "USD",
+      "description": "Brand the cloak room area used by attendees upon arrival and departure. Your brand is the first and last thing attendees see as they store and collect belongings.",
+      "features": [
+        "Branded cloak room area",
+        "Signage and backdrop branding",
+        "First and last touchpoint",
+        "High dwell-time area"
+      ],
+      "category": "advertising",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-bar-lounge",
+      "name": "Bar Lounge Sponsorship",
+      "price": null,
+      "currency": "USD",
+      "description": "Sponsor the bar lounge where attendees relax and network over drinks. Full branding of the lounge area including bar counters, seating, and menu displays. Pricing TBA.",
+      "features": [
+        "Branded bar and lounge area",
+        "Menu and drink branding",
+        "Premium networking space",
+        "High-engagement environment"
+      ],
+      "category": "advertising",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-award-ceremony",
+      "name": "Award Ceremony Sponsorship",
+      "price": null,
+      "currency": "USD",
+      "description": "Sponsor the official award ceremony recognizing top brokers and industry leaders. Your brand is prominently featured during the ceremony, stage, and award materials. Pricing TBA.",
+      "features": [
+        "Stage and podium branding",
+        "Award trophy co-branding",
+        "MC acknowledgment",
+        "Photo wall branding"
+      ],
+      "category": "advertising",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-smoking-lounge",
+      "name": "Smoking Lounge Sponsorship",
+      "price": null,
+      "currency": "USD",
+      "description": "Brand the designated smoking lounge area. A high-dwell-time space where attendees spend extended periods, giving your brand prolonged exposure. Pricing TBA.",
+      "features": [
+        "Branded smoking lounge",
+        "Extended dwell-time exposure",
+        "Signage and furniture branding",
+        "Relaxed networking environment"
+      ],
+      "category": "advertising",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-welcome-party",
+      "name": "Welcome Party Sponsor",
+      "price": null,
+      "currency": "USD",
+      "description": "Sponsor the official welcome party on the eve of the expo. Your brand headlines the kickoff celebration attended by VIPs, speakers, and top-tier brokers. Pricing TBA.",
+      "features": [
+        "Headline sponsor of welcome party",
+        "Venue branding",
+        "Stage and entertainment branding",
+        "VIP guest list access"
+      ],
+      "category": "advertising",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-closing-party",
+      "name": "Closing Party Sponsor",
+      "price": null,
+      "currency": "USD",
+      "description": "Sponsor the official closing party celebrating the end of the expo. Your brand is the final impression as attendees celebrate connections made during the event. Pricing TBA.",
+      "features": [
+        "Headline sponsor of closing party",
+        "Venue branding",
+        "Stage and entertainment branding",
+        "Closing remarks recognition"
+      ],
+      "category": "advertising",
+      "availability": 1,
+      "virtualOnly": false
+    },
+    {
+      "id": "ad-gala-night",
+      "name": "Gala Night Sponsorship",
+      "price": null,
+      "currency": "USD",
+      "description": "Sponsor the prestigious gala night dinner event. An exclusive evening of fine dining and networking, with your brand featured across the venue and program. Pricing TBA.",
+      "features": [
+        "Gala dinner headline sponsorship",
+        "Table and venue branding",
+        "Program and menu branding",
+        "Red carpet photo wall"
+      ],
+      "category": "advertising",
+      "availability": 1,
+      "virtualOnly": false
+    }
+  ],
+  "digitalProducts": [
+    {
+      "id": "digital-booth-upgrade",
+      "name": "Virtual Booth Upgrade",
+      "price": 5000,
+      "currency": "USD",
+      "description": "Upgrade your virtual booth with enhanced 3D visuals including custom animations, particle effects, and high-resolution textures. Stand out from standard booths with a premium interactive experience that draws more visitors.",
+      "features": [
+        "Custom 3D animations and particle effects",
+        "High-resolution custom textures and materials",
+        "Interactive hotspots with rich media",
+        "Animated logo and brand elements",
+        "Premium lighting and visual effects"
+      ],
+      "category": "digital",
+      "availability": "unlimited",
+      "virtualOnly": true
+    },
+    {
+      "id": "digital-ai-chat-pro",
+      "name": "AI Chat Agent Pro",
+      "price": 3000,
+      "currency": "USD",
+      "description": "Deploy a custom AI chat agent trained on your company-specific data, product offerings, and FAQs. Engage visitors 24/7 with intelligent responses, lead qualification, and unlimited conversation capacity.",
+      "features": [
+        "Custom AI agent trained on your company data",
+        "Unlimited visitor responses",
+        "Lead qualification and scoring",
+        "Multi-language support",
+        "Conversation analytics dashboard"
+      ],
+      "category": "digital",
+      "availability": "unlimited",
+      "virtualOnly": true
+    },
+    {
+      "id": "digital-billboard",
+      "name": "Virtual Billboard",
+      "price": 2000,
+      "currency": "USD",
+      "description": "Display an animated billboard in the main virtual exhibition hall with your branding, messaging, and call-to-action. Available in three sizes (small, medium, large) positioned in high-traffic areas of the 3D environment.",
+      "features": [
+        "Animated billboard in main hall",
+        "Three sizes: small, medium, large",
+        "Custom creative with animation support",
+        "Click-through to your booth or external URL",
+        "Impression tracking analytics"
+      ],
+      "category": "digital",
+      "availability": 12,
+      "virtualOnly": true
+    },
+    {
+      "id": "digital-mt5-feed-sponsor",
+      "name": "Sponsored MT5 Feed",
+      "price": 1500,
+      "currency": "USD",
+      "description": "Place your broker logo and call-to-action directly on the live MT5 price feed overlay visible to all visitors. Every time a visitor checks live forex prices, your brand is front and center.",
+      "features": [
+        "Logo on live MT5 price feed overlay",
+        "Custom call-to-action message",
+        "Click-through to your booth",
+        "Visible to all active visitors",
+        "Real-time impression counting"
+      ],
+      "category": "digital",
+      "availability": 3,
+      "virtualOnly": true
+    },
+    {
+      "id": "digital-priority-placement",
+      "name": "Priority Booth Placement",
+      "price": 4000,
+      "currency": "USD",
+      "description": "Secure the most visible booth position at the virtual entrance. Your booth is the first thing every visitor sees when they enter the 3D expo hall, maximizing foot traffic and first impressions.",
+      "features": [
+        "Booth positioned at virtual entrance",
+        "First booth seen by all visitors",
+        "Enhanced booth marker on minimap",
+        "Priority listing in booth directory",
+        "Welcome notification to new visitors"
+      ],
+      "category": "digital",
+      "availability": 1,
+      "virtualOnly": true
+    },
+    {
+      "id": "digital-seminar-slot",
+      "name": "Virtual Seminar Slot",
+      "price": 3500,
+      "currency": "USD",
+      "description": "Host a 30-minute branded presentation on the virtual seminar stage. Present to the entire online audience with your branding on the stage, slides integration, and live Q&A functionality.",
+      "features": [
+        "30-minute speaking slot on virtual stage",
+        "Branded stage backdrop and overlays",
+        "Live Q&A with audience",
+        "Slide and screen-share integration",
+        "Recording provided post-event"
+      ],
+      "category": "digital",
+      "availability": 8,
+      "virtualOnly": true
+    },
+    {
+      "id": "digital-lead-capture",
+      "name": "Lead Capture Package",
+      "price": 2500,
+      "currency": "USD",
+      "description": "Collect visitor contact details and engagement data from every booth interaction. Capture emails, phone numbers, and interest areas with automated follow-up sequences triggered post-visit.",
+      "features": [
+        "Collect visitor emails and contact details",
+        "Interest and intent tracking",
+        "Automated follow-up email sequences",
+        "Downloadable lead report (CSV/Excel)",
+        "CRM integration support"
+      ],
+      "category": "digital",
+      "availability": "unlimited",
+      "virtualOnly": true
+    },
+    {
+      "id": "digital-networking-room",
+      "name": "Virtual Networking Room",
+      "price": 6000,
+      "currency": "USD",
+      "description": "A private branded video conferencing room for 1:1 or group meetings within the virtual expo. Schedule and host live video calls with prospects directly from your booth with full branding.",
+      "features": [
+        "Private branded video room",
+        "1:1 and group meeting support",
+        "Scheduling and calendar integration",
+        "Screen sharing and presentation mode",
+        "Meeting recording and transcription"
+      ],
+      "category": "digital",
+      "availability": "unlimited",
+      "virtualOnly": true
+    },
+    {
+      "id": "digital-homepage-banner",
+      "name": "Homepage Banner",
+      "price": 1000,
+      "currency": "USD",
+      "description": "Display a prominent banner on the expo landing page seen by every visitor before they enter the 3D hall. Price is per week, with rotation among active banner sponsors. Drives direct traffic to your booth.",
+      "features": [
+        "Banner on expo landing page",
+        "Visible before entering 3D hall",
+        "Click-through to booth or external URL",
+        "Weekly rotation among sponsors",
+        "Impression and click analytics"
+      ],
+      "category": "digital",
+      "availability": 5,
+      "virtualOnly": true
+    },
+    {
+      "id": "digital-push-notification",
+      "name": "Push Notification Sponsorship",
+      "price": 800,
+      "currency": "USD",
+      "description": "Send a branded push notification to all connected visitors in the virtual expo. Announce promotions, events, or drive traffic to your booth with a single broadcast message reaching every active user.",
+      "features": [
+        "Branded notification to all connected visitors",
+        "Custom message and call-to-action",
+        "Direct link to booth or content",
+        "Delivery and engagement analytics",
+        "Scheduled or instant delivery"
+      ],
+      "category": "digital",
+      "availability": 10,
+      "virtualOnly": true
+    }
+  ]
+}

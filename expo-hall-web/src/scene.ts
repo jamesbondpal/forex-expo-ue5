@@ -138,7 +138,7 @@ function buildBoothMeshes(
     new THREE.MeshPhysicalMaterial({
       color: prim,
       emissive: prim,
-      emissiveIntensity: 1.35,
+      emissiveIntensity: 2.2,
       metalness: 0.55,
       roughness: 0.22,
       envMapIntensity: 0.7,
@@ -156,7 +156,7 @@ function buildBoothMeshes(
     new THREE.MeshPhysicalMaterial({
       color: prim,
       emissive: prim,
-      emissiveIntensity: 2.2,
+      emissiveIntensity: 3.5,
       metalness: 0.6,
       roughness: 0.18,
       toneMapped: false,
@@ -320,7 +320,7 @@ export async function buildHall(
       new THREE.MeshPhysicalMaterial({
         color: 0xffeedd,
         emissive: 0xffe8cc,
-        emissiveIntensity: 1.8,
+        emissiveIntensity: 3.0,
         metalness: 0.15,
         roughness: 0.45,
         toneMapped: false,
@@ -442,13 +442,17 @@ export async function buildHall(
   rowSign("DIAMOND SPONSORS", rowDiamondZ, 0xc0c8d4);
   rowSign("GOLD EXHIBITORS", rowGoldZ, 0xb87333);
 
-  const ambient = new THREE.AmbientLight(0x6a7a94, 0.18);
+  // === DRAMATIC LIGHTING SYSTEM ===
+
+  // Subtle ambient — keep it dark for drama
+  const ambient = new THREE.AmbientLight(0x3a4a64, 0.08);
   scene.add(ambient);
 
-  const hemi = new THREE.HemisphereLight(0xb8c8e2, 0x080c12, 0.42);
+  const hemi = new THREE.HemisphereLight(0x8090b0, 0x040608, 0.25);
   scene.add(hemi);
 
-  const key = new THREE.DirectionalLight(0xfff6ed, 1.55);
+  // Key directional — warm, with high quality shadows
+  const key = new THREE.DirectionalLight(0xfff2e0, 1.8);
   key.position.set(32, 48, 28);
   key.castShadow = true;
   key.shadow.mapSize.set(4096, 4096);
@@ -462,19 +466,117 @@ export async function buildHall(
   key.shadow.normalBias = 0.025;
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0xa8b8e8, 0.42);
+  // Cool fill from opposite side
+  const fill = new THREE.DirectionalLight(0x6080c0, 0.35);
   fill.position.set(-48, 32, -18);
   scene.add(fill);
 
-  const rim = new THREE.DirectionalLight(0xffe8d0, 0.55);
+  // Warm rim light from behind
+  const rim = new THREE.DirectionalLight(0xffd8a8, 0.6);
   rim.position.set(0, 18, -40);
   scene.add(rim);
 
-  for (const z of [rowTitaniumZ, rowDiamondZ, rowGoldZ]) {
-    const pl = new THREE.PointLight(0xffead8, 22, 110, 2);
-    pl.position.set(0, 10.5, z);
-    pl.castShadow = false;
-    scene.add(pl);
+  // === BOOTH-SPECIFIC COLORED KEY LIGHTS ===
+  // Each broker row gets strong colored RectAreaLights
+  const boothColors: Record<string, number> = {
+    titanium: 0xff3333,   // deep red for titanium row
+    diamond:  0x00ccaa,   // electric teal
+    gold:     0xffbb33,   // warm gold
+  };
+
+  const rowPositions: [string, number][] = [
+    ["titanium", rowTitaniumZ],
+    ["diamond", rowDiamondZ],
+    ["gold", rowGoldZ],
+  ];
+
+  for (const [tier, z] of rowPositions) {
+    const color = boothColors[tier] ?? 0xffffff;
+
+    // Large overhead RectAreaLight — 16m × 5m
+    const rl = new THREE.RectAreaLight(color, 18, 16, 5);
+    rl.position.set(0, HALL.ceiling - 0.8, z);
+    rl.rotation.x = -Math.PI / 2;
+    scene.add(rl);
+
+    // Warm white fill for each row
+    const rowFill = new THREE.PointLight(0xfff0d8, 15, 80, 2);
+    rowFill.position.set(0, 10.5, z);
+    scene.add(rowFill);
+
+    // Side accent spots for each row
+    for (const side of [-1, 1]) {
+      const spot = new THREE.SpotLight(color, 35, 60, Math.PI / 8, 0.5, 2);
+      spot.position.set(side * 28, HALL.ceiling - 1, z);
+      spot.target.position.set(0, 0, z);
+      scene.add(spot, spot.target);
+    }
+  }
+
+  // === DUST PARTICLES ===
+  const dustCount = 800;
+  const dustGeo = new THREE.BufferGeometry();
+  const dustPos = new Float32Array(dustCount * 3);
+  const dustSizes = new Float32Array(dustCount);
+  for (let i = 0; i < dustCount; i++) {
+    dustPos[i * 3] = (Math.random() - 0.5) * HALL.w;
+    dustPos[i * 3 + 1] = Math.random() * HALL.ceiling;
+    dustPos[i * 3 + 2] = (Math.random() - 0.5) * HALL.d;
+    dustSizes[i] = 0.02 + Math.random() * 0.06;
+  }
+  dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
+  dustGeo.setAttribute("size", new THREE.BufferAttribute(dustSizes, 1));
+
+  const dustMat = new THREE.PointsMaterial({
+    color: 0xffeedd,
+    size: 0.04,
+    transparent: true,
+    opacity: 0.3,
+    sizeAttenuation: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const dustParticles = new THREE.Points(dustGeo, dustMat);
+  dustParticles.userData.isDust = true;
+  scene.add(dustParticles);
+
+  // === ANIMATED NEON WALL STRIPS ===
+  const neonMat = new THREE.MeshPhysicalMaterial({
+    color: 0x00aaff,
+    emissive: 0x0088ff,
+    emissiveIntensity: 2.5,
+    metalness: 0.5,
+    roughness: 0.15,
+    toneMapped: false,
+  });
+  const neonGeo = new THREE.BoxGeometry(HALL.w - 4, 0.08, 0.08);
+
+  for (const y of [2.0, 4.5]) {
+    // North wall strip
+    const n = new THREE.Mesh(neonGeo, neonMat.clone());
+    n.position.set(0, y, -HALL.d / 2 + 0.5);
+    n.userData.isNeon = true;
+    n.userData.neonPhase = y * 1.5;
+    scene.add(n);
+
+    // South wall strip
+    const s = new THREE.Mesh(neonGeo, neonMat.clone());
+    s.position.set(0, y, HALL.d / 2 - 0.5);
+    s.userData.isNeon = true;
+    s.userData.neonPhase = y * 1.5 + 1.0;
+    scene.add(s);
+  }
+
+  // East/West wall vertical strips
+  const vertNeonGeo = new THREE.BoxGeometry(0.08, HALL.ceiling * 0.6, 0.08);
+  for (const x of [-HALL.w / 2 + 0.5, HALL.w / 2 - 0.5]) {
+    for (let zz = -HALL.d / 2 + 12; zz < HALL.d / 2 - 5; zz += 18) {
+      const vn = new THREE.Mesh(vertNeonGeo, neonMat.clone());
+      vn.position.set(x, HALL.ceiling * 0.35, zz);
+      vn.userData.isNeon = true;
+      vn.userData.neonPhase = zz * 0.1;
+      scene.add(vn);
+    }
   }
 
   return booths;

@@ -1,8 +1,14 @@
 import { Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { readFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { generateAiResponse } from './aiChat.js';
 import { trackEvent } from './brokerManager.js';
 import { sendBookingConfirmation, sendAgentNotification } from './emailService.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const startTime = Date.now();
 
@@ -158,6 +164,71 @@ export function createApiRouter(brokers, signalling) {
     }
 
     res.json({ ok: true });
+  });
+
+  // ── Sponsorship Products ─────────────────────────────────────────────
+
+  function loadSponsorshipData() {
+    const raw = readFileSync(join(__dirname, '../../data/sponsorship-products.json'), 'utf-8');
+    return JSON.parse(raw);
+  }
+
+  // Get booth packages
+  router.get('/sponsorship/packages', (req, res) => {
+    const data = loadSponsorshipData();
+    res.json({ boothPackages: data.boothPackages });
+  });
+
+  // Get branding opportunities
+  router.get('/sponsorship/branding', (req, res) => {
+    const data = loadSponsorshipData();
+    res.json({ brandingOpportunities: data.brandingOpportunities });
+  });
+
+  // Get digital products
+  router.get('/sponsorship/digital', (req, res) => {
+    const data = loadSponsorshipData();
+    res.json({ digitalProducts: data.digitalProducts });
+  });
+
+  // Get all sponsorship products
+  router.get('/sponsorship/all', (req, res) => {
+    const data = loadSponsorshipData();
+    res.json(data);
+  });
+
+  // Submit sponsorship inquiry
+  router.post('/sponsorship/inquire', (req, res) => {
+    const { productId, brokerId, name, email, company, message } = req.body;
+
+    if (!productId || !name || !email) {
+      return res.status(400).json({ error: 'productId, name, and email are required' });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: 'Invalid email address' });
+    }
+
+    // Look up the product
+    const data = loadSponsorshipData();
+    const allProducts = [
+      ...data.boothPackages,
+      ...data.brandingOpportunities,
+      ...data.advertisingOpportunities,
+      ...data.digitalProducts
+    ];
+    const product = allProducts.find(p => p.id === productId);
+
+    const inquiryId = uuidv4().replace(/-/g, '').substring(0, 12);
+
+    console.log(`[Sponsorship Inquiry] ${inquiryId} | product=${productId} | broker=${brokerId || 'n/a'} | ${name} <${email}> | ${company || 'n/a'}`);
+
+    res.json({
+      received: true,
+      inquiryId,
+      product: product ? { id: product.id, name: product.name, price: product.price, category: product.category } : null,
+      timestamp: new Date().toISOString()
+    });
   });
 
   return router;

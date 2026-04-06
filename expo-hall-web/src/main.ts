@@ -88,27 +88,28 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 1.2;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 RectAreaLightUniformsLib.init();
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(COL.fog);
-scene.fog = new THREE.FogExp2(COL.fog, 0.004);
+scene.fog = new THREE.FogExp2(COL.fog, 0.006);
 
 const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.08, 520);
-camera.position.set(0, 1.65, 44);
+camera.position.set(0, 1.65, 35);
+camera.rotation.y = Math.PI;  // face into hall (negative Z)
 
 const composer = new EffectComposer(renderer);
 const renderPass = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 0.48, 0.88);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.4, 0.7, 0.22);
 const SMAAFactory = SMAAPass as unknown as new (w: number, h: number) => InstanceType<typeof SMAAPass>;
 const smaaPass = new SMAAFactory(window.innerWidth, window.innerHeight);
-const filmPass = new FilmPass(0.032, false);
+const filmPass = new FilmPass(0.06, false);
 const vignettePass = new ShaderPass(VignetteShader);
-vignettePass.uniforms.offset.value = 0.92;
-vignettePass.uniforms.darkness.value = 1.18;
+vignettePass.uniforms.offset.value = 0.85;
+vignettePass.uniforms.darkness.value = 1.5;
 const outputPass = new OutputPass();
 
 composer.addPass(renderPass);
@@ -215,9 +216,89 @@ function onResize() {
 
 window.addEventListener("resize", onResize);
 
+// === PROCEDURAL AMBIENT AUDIO ===
+let audioCtx: AudioContext | null = null;
+let audioStarted = false;
+
+function startAmbientAudio() {
+  if (audioStarted) return;
+  audioStarted = true;
+  try {
+    audioCtx = new AudioContext();
+    // Crowd murmur — filtered noise
+    const bufferSize = audioCtx.sampleRate * 2;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.015;
+    }
+    const noiseSource = audioCtx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.loop = true;
+    // Bandpass filter — 200-800Hz for murmur effect
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.value = 400;
+    filter.Q.value = 0.5;
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0.12;
+    noiseSource.connect(filter).connect(gain).connect(audioCtx.destination);
+    noiseSource.start();
+
+    // Subtle low hum — 60Hz
+    const hum = audioCtx.createOscillator();
+    hum.frequency.value = 60;
+    hum.type = "sine";
+    const humGain = audioCtx.createGain();
+    humGain.gain.value = 0.02;
+    hum.connect(humGain).connect(audioCtx.destination);
+    hum.start();
+  } catch (_) {
+    // Audio not supported — silently continue
+  }
+}
+
+// === CINEMATIC INTRO CAMERA FLY-IN ===
+let introActive = false;  // TODO: Re-enable with proper PointerLockControls handoff
+let introTime = 0;
+const INTRO_DURATION = 3.5; // seconds
+const INTRO_START = new THREE.Vector3(0, 4.5, HALL.d / 2 - 2);
+const INTRO_END = new THREE.Vector3(0, 1.65, HALL.d / 2 - 8);
+
 function animate() {
   requestAnimationFrame(animate);
   const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+
+  // Cinematic intro fly-in
+  if (introActive) {
+    introTime += dt;
+    const progress = Math.min(introTime / INTRO_DURATION, 1.0);
+    // Smooth ease-out cubic
+    const ease = 1 - Math.pow(1 - progress, 3);
+    camera.position.lerpVectors(INTRO_START, INTRO_END, ease);
+    camera.lookAt(0, 1.5, -20);
+    // Gradually narrow FOV for dramatic zoom
+    camera.fov = THREE.MathUtils.lerp(85, 62, ease);
+    camera.updateProjectionMatrix();
+
+    if (progress >= 1.0) {
+      introActive = false;
+      camera.position.copy(INTRO_END);
+    }
+
+    // Still render during intro
+    animateDustAndNeon(t);
+    animateCrowd(crowdWalkers, dt, HALL);
+    composer.render(dt);
+    return;
+  }
+
+  // Start audio on first interaction
+  if (controls.isLocked && !audioStarted) {
+    startAmbientAudio();
+  }
+
   if (controls.isLocked) {
     moveVec.set(0, 0, 0);
     if (keys.f) moveVec.z -= 1;
@@ -230,6 +311,19 @@ function animate() {
   }
 
   const p = camera.position;
+
+  // Camera bob when walking (subtle sine wave)
+  const isMoving = keys.f || keys.b || keys.l || keys.r;
+  if (isMoving && controls.isLocked) {
+    p.y = 1.65 + Math.sin(t * 8.0) * 0.025; // subtle walk bob
+  } else {
+    p.y = THREE.MathUtils.lerp(p.y, 1.65, dt * 5); // smoothly return
+  }
+
+  // FOV breathing effect (subtle pulse 60-64 degrees)
+  camera.fov = 62 + Math.sin(t * 0.6) * 1.5;
+  camera.updateProjectionMatrix();
+
   p.x = THREE.MathUtils.clamp(p.x, -HALL.w / 2 + 2.5, HALL.w / 2 - 2.5);
   p.z = THREE.MathUtils.clamp(p.z, -HALL.d / 2 + 3.5, HALL.d / 2 - 2.5);
 
@@ -237,8 +331,13 @@ function animate() {
   p.x = THREE.MathUtils.clamp(p.x, -HALL.w / 2 + 2.5, HALL.w / 2 - 2.5);
   p.z = THREE.MathUtils.clamp(p.z, -HALL.d / 2 + 3.5, HALL.d / 2 - 2.5);
 
+  // Animate crowd
   animateCrowd(crowdWalkers, dt, HALL);
 
+  // Animate dust particles + neon strips
+  animateDustAndNeon(t);
+
+  // Broker proximity check
   let nearest: Broker | null = null;
   let best = TRIGGER + 1;
   for (const g of booths) {
@@ -264,6 +363,33 @@ function animate() {
   }
 
   composer.render(dt);
+}
+
+function animateDustAndNeon(t: number) {
+  // Animate dust particles — gentle floating
+  scene.traverse((obj) => {
+    if (obj.userData.isDust && obj instanceof THREE.Points) {
+      const positions = obj.geometry.attributes.position;
+      if (positions) {
+        const arr = positions.array as Float32Array;
+        for (let i = 0; i < arr.length; i += 3) {
+          arr[i] += Math.sin(t * 0.3 + i) * 0.003;      // drift X
+          arr[i + 1] += Math.sin(t * 0.2 + i * 0.5) * 0.002; // drift Y
+          arr[i + 2] += Math.cos(t * 0.25 + i * 0.3) * 0.002; // drift Z
+          // Wrap around if they drift out of bounds
+          if (arr[i + 1] > HALL.ceiling) arr[i + 1] = 0.5;
+          if (arr[i + 1] < 0) arr[i + 1] = HALL.ceiling - 0.5;
+        }
+        positions.needsUpdate = true;
+      }
+    }
+    // Animate neon strips — pulse emissive intensity
+    if (obj.userData.isNeon && obj instanceof THREE.Mesh) {
+      const mat = obj.material as THREE.MeshPhysicalMaterial;
+      const phase = (obj.userData.neonPhase as number) || 0;
+      mat.emissiveIntensity = 1.8 + Math.sin(t * 2.0 + phase) * 1.2;
+    }
+  });
 }
 
 bootstrap()
