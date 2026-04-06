@@ -134,6 +134,13 @@ function showFallback() {
   clearTimeout(offerTimer);
   if (loadingScreen) loadingScreen.classList.add('hidden');
   if (fallbackMessage) fallbackMessage.classList.remove('hidden');
+
+  // Auto-enter fallback mode after 3 seconds
+  setTimeout(() => {
+    if (fallbackMessage && !fallbackMessage.classList.contains('hidden')) {
+      window.dispatchEvent(new CustomEvent('enter-fallback-mode'));
+    }
+  }, 3000);
 }
 
 // ---------------------------------------------------------------------------
@@ -205,7 +212,7 @@ function handleSignallingMessage(msg) {
 // Config — receive playerId and optional ICE servers
 // ---------------------------------------------------------------------------
 let offerTimer = null;
-const OFFER_TIMEOUT_MS = 8000; // Show fallback if no offer within 8s
+const OFFER_TIMEOUT_MS = 3000; // Show fallback if no offer within 3s
 
 function handleConfig(msg) {
   playerId = msg.playerId ?? playerId;

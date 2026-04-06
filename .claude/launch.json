@@ -1,0 +1,27 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "expo-hall",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--host"],
+      "port": 5173,
+      "autoPort": false,
+      "cwd": "expo-hall-web"
+    },
+    {
+      "name": "ue5-client",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "forex-expo-ue5/client", "--no-clipboard"],
+      "port": 8080,
+      "autoPort": true
+    },
+    {
+      "name": "server",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["forex-expo-ue5/server/src/index.js"],
+      "port": 3000,
+      "autoPort": false
+    }
+  ]
+}

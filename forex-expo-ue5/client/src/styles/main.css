@@ -92,6 +92,123 @@ body {
   text-align: center;
 }
 
+/* --- Animated Logo --- */
+.loading-content {
+  text-align: center;
+}
+
+.logo-wrapper {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.logo-text {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: center;
+  animation: logoSlideIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.logo-forex, .logo-expo, .logo-dubai {
+  font-weight: 800;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+
+.logo-forex {
+  font-size: 3.2rem;
+  color: var(--white);
+  animation: logoGlow 3s ease-in-out infinite alternate;
+}
+
+.logo-expo {
+  font-size: 3.2rem;
+  color: var(--white);
+  opacity: 0.85;
+  animation: logoGlow 3s ease-in-out 0.3s infinite alternate;
+}
+
+.logo-dubai {
+  font-size: 3.2rem;
+  color: var(--red);
+  animation: logoGlow 3s ease-in-out 0.6s infinite alternate;
+}
+
+.logo-pulse {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  animation: pulseBar 2s ease-in-out infinite;
+}
+
+.connection-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--gray-600);
+  font-size: 0.85rem;
+  transition: color 0.3s;
+}
+
+.step.active {
+  color: var(--gold);
+}
+
+.step.done {
+  color: #4caf50;
+}
+
+.step-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gray-600);
+  transition: all 0.3s;
+}
+
+.step.active .step-indicator {
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+  animation: stepPulse 1s ease-in-out infinite;
+}
+
+.step.done .step-indicator {
+  background: #4caf50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.5);
+}
+
+@keyframes logoSlideIn {
+  from { opacity: 0; transform: translateY(-30px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes logoGlow {
+  from { text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+  to   { text-shadow: 0 0 30px rgba(255,255,255,0.3), 0 0 60px rgba(212,168,83,0.15); }
+}
+
+@keyframes pulseBar {
+  0%, 100% { opacity: 0.3; width: 80px; }
+  50%      { opacity: 1; width: 160px; }
+}
+
+@keyframes stepPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.4); }
+}
+
 .progress-bar {
   width: 200px;
   height: 3px;
